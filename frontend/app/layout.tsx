@@ -10,47 +10,54 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://autopower.sa/"),
-  title: "أوتو باور | موزع معتمد لأفضل العلامات التجارية للسيارات في السعودية",
+  metadataBase: new URL("https://eng-techno.vercel.app/"),
+  title: "Techno International Group | Global Leaders in Defense & Security Solutions",
   description:
-    "أوتو باور موزع معتمد لأفضل وأشهر العلامات التجارية للسيارات في المملكة العربية السعودية. نقدم تجربة استثنائية وخدمات مميزة لما بعد البيع لتحقيق رضا العملاء وبناء الثقة في كل تعامل.",
+    "Techno International Group is a premier provider of defense and security solutions, dedicated to enhancing national security and operational readiness across the globe. Empowering nations with cutting-edge equipment, advanced technology, and trusted expertise.",
   keywords: [
-    "أوتو باور",
-    "موزع معتمد",
-    "قطع غيار سيارات",
-    "العلامات التجارية للسيارات",
-    "خدمات ما بعد البيع",
-    "سيارات السعودية",
-    "قطع أصلية",
+    "Techno International Group",
+    "Defense Solutions",
+    "Security Solutions",
+    "Military Equipment",
+    "Defense Technology",
+    "Armed Forces",
+    "Law Enforcement",
+    "Government Institutions",
+    "National Security",
+    "Operational Readiness",
+    "Defense & Security",
+    "Military Technology",
   ],
-  authors: [{ name: "أوتو باور", url: "https://autopower.sa" }],
+  authors: [{ name: "Techno International Group", url: "https://eng-techno.vercel.app/" }],
   robots: "index, follow",
   alternates: {
-    canonical: "https://autopower.sa/",
+    canonical: "https://eng-techno.vercel.app/",
     languages: {
-      "ar-SA": "https://autopower.sa/",
+      "en": "https://eng-techno.vercel.app/",
+      "ar": "https://eng-techno.vercel.app/ar",
     },
   },
   openGraph: {
-    title: "أوتو باور | موزع معتمد لأفضل العلامات التجارية للسيارات",
+    title: "Techno International Group | Global Leaders in Defense & Security Solutions",
     description:
-      "أوتو باور موزع معتمد يقدم خدمات متميزة وتجربة فريدة لعشاق السيارات في المملكة العربية السعودية.",
-    url: "https://autopower.sa/",
+      "Empowering nations with cutting-edge equipment, advanced technology, and trusted expertise. Premier provider of defense and security solutions with decades of experience and a network of over 4,000 experts.",
+    url: "https://eng-techno.vercel.app/",
     type: "website",
+    siteName: "Techno International Group",
     images: [
       {
         url: "/logo.svg",
-        width: 800,
-        height: 600,
-        alt: "شعار أوتو باور",
+        width: 1200,
+        height: 630,
+        alt: "Techno International Group Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "أوتو باور | موزع معتمد للسيارات في السعودية",
+    title: "Techno International Group | Defense & Security Solutions",
     description:
-      "أفضل تجربة لشراء قطع الغيار وخدمات ما بعد البيع داخل المملكة.",
+      "Global leaders in defense and security solutions. Empowering nations with cutting-edge equipment and trusted expertise.",
     images: ["/logo.svg"],
   },
   icons: {
@@ -67,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" suppressHydrationWarning >
+    <html lang="en" suppressHydrationWarning >
       <body
         className={`${cairo.variable} font-sans antialiased`}
       >

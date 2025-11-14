@@ -4,7 +4,6 @@ import React from "react";
 import { getQueryClient } from "@/utils/queryClient";
 import AuthProvider from "@/providers/AuthProvider";
 import { User } from "@/features/auth/types";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = getQueryClient();
@@ -17,19 +16,13 @@ export function CoreProviders({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <NextThemesProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-      >
+    
         {children}
         <Toaster />
-      </NextThemesProvider>
     </QueryClientProvider>
   );
 }
 
-// AuthProvider wrapper - used in dashboard (CoreProviders already wraps from root)
 export function Providers({
   children,
   data,
