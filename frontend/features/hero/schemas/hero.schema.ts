@@ -22,8 +22,8 @@ export const createOrUpdateHeroSchema = z.object({
   backgroundImage: z
     .instanceof(File, { message: "Background image is required" })
     .refine(
-      (file) => file.size <= 5 * 1024 * 1024,
-      "Image size must be less than 5MB"
+      (file) => file.size <= 10 * 1024 * 1024,
+      "Image size must be less than 10MB"
     )
     .refine(
       (file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type),
@@ -56,8 +56,8 @@ export const updateHeroSchema = z.object({
   backgroundImage: z
     .instanceof(File, { message: "Invalid file" })
     .refine(
-      (file) => file.size <= 5 * 1024 * 1024,
-      "Image size must be less than 5MB"
+      (file) => file.size <= 10 * 1024 * 1024,
+      "Image size must be less than 10MB"
     )
     .refine(
       (file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type),

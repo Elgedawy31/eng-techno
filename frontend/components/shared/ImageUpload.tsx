@@ -70,7 +70,7 @@ export function ImageUpload({
     useDropzone({
       onDrop,
       accept,
-      maxSize,
+      maxSize: 10 * 1024 * 1024,
       maxFiles: 1,
       disabled,
       onDropRejected: () => {
@@ -155,7 +155,7 @@ export function ImageUpload({
                   : "Click to upload or drag and drop"}
               </p>
               <p className="text-xs text-muted-foreground">
-                PNG, JPG, WEBP up to {maxSize / (1024 * 1024)}MB
+                PNG, JPG, WEBP up to {10 / (1024 * 1024)}MB
               </p>
             </div>
           </div>
