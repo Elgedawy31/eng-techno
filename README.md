@@ -70,7 +70,11 @@ cd backend && bun run dev  # http://localhost:3001
 cd frontend && bun run dev  # http://localhost:3000
 ```
 
-**Default Admin:** `admin@admin.com` / `admin123`
+**Default Admin Credentials:**
+- **Email:** `admin@admin.com` (set via `DEFAULT_ADMIN_EMAIL` environment variable)
+- **Password:** `admin123` (set via `DEFAULT_ADMIN_PASSWORD` environment variable)
+
+These credentials are automatically created on first run if they don't exist. Make sure to change them in production!
 
 ## Scripts
 
