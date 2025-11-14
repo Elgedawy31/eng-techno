@@ -9,7 +9,7 @@ interface UniLoadingProps {
 }
 
 const UniLoading = ({
-  message = 'جاري التحميل...',
+  message = 'Loading...',
   className,
   size = 'md',
   fullScreen = false,

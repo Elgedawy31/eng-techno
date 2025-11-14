@@ -4,22 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useAuthStore } from "@/features/auth/stores/authStore";
-import { useTheme } from "next-themes";
-import { Sun, Moon, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 export function DashboardNavbar() {
   const { logout, loading } = useLogout();
   const { user } = useAuthStore((state) => state);
-  const { theme, setTheme } = useTheme();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -49,25 +42,12 @@ export function DashboardNavbar() {
             </div>
           )}
           <Button
-            onClick={toggleTheme}
-            variant="outline"
-            size="icon"
-            className={cn(
-              "relative transition-all duration-200 hover:scale-110 active:scale-95"
-            )}
-            aria-label="Toggle theme"
-            suppressHydrationWarning
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100" />
-          </Button>
-          <Button
             onClick={() => setIsLogoutModalOpen(true)}
             disabled={loading}
             variant="default"
 
           >
-            {loading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+            {loading ? "Logging out..." : "Logout"}
           </Button>
         </div>
       </div>
@@ -75,10 +55,10 @@ export function DashboardNavbar() {
       <ConfirmationModal
         open={isLogoutModalOpen}
         onOpenChange={setIsLogoutModalOpen}
-        title="تأكيد تسجيل الخروج"
-        description="هل أنت متأكد من رغبتك في تسجيل الخروج؟"
-        confirmText="تسجيل الخروج"
-        cancelText="إلغاء"
+          title="Confirm logout"
+        description="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Cancel"
         variant="default"
         onConfirm={handleLogout}
         icon={<LogOut className="h-8 w-8" />}
