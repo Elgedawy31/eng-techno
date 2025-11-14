@@ -4,6 +4,8 @@ import { router as heroRouter } from "./hero.route";
 import { router as aboutRouter } from "./about.route";
 import { router as serviceRouter } from "./service.route";
 import { router as searchRouter } from "./search.route";
+import { router as mediaCentreRouter } from "./mediaCentre.route";
+import { router as eventRouter } from "./event.route";
 
 export const router = Router();
 
@@ -12,5 +14,7 @@ router.use("/hero", heroRouter);
 router.use("/about", aboutRouter);
 router.use("/services", serviceRouter);
 router.use("/search", searchRouter);
+router.use("/media-centre", mediaCentreRouter);
+router.use("/events", eventRouter);
 
 
