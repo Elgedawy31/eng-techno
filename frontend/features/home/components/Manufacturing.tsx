@@ -51,11 +51,11 @@ export default function Manufacturing({ service }: ManufacturingProps) {
             <p>{displayText2}</p>
           </div>
           {additionalText && (
-            <div className="w-2/3">
-              <p className="text-xl text-white">
+          <div className="w-2/3">
+            <p className="text-xl text-white">
                 {additionalText}
-              </p>
-            </div>
+            </p>
+          </div>
           )}
         <Link href={buttonAction} className='py-2 mt-4 text-[28px] flex items-center gap-4 text-white'>
           {buttonText}

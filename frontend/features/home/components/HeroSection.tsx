@@ -3,6 +3,7 @@
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import type { Hero } from '@/features/hero/services/heroService';
+import { Fade, Slide } from 'react-awesome-reveal';
 
 interface HeroSectionProps {
   hero: Hero | null;
@@ -29,18 +30,28 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
   if (!hero) {
     return (
       <div className='flex flex-col items-start justify-center h-[86.7vh] text-white gap-4 px-70'>
-        <div>
-          <h1 className='text-6xl font-normal font-heading leading-[100%]'>GLOBAL LEADERS IN</h1>
-          <h1 className='text-6xl font-normal font-heading'>DEFENSE & SECURITY SOLUTIONS</h1>
-        </div>
-        <div>
-          <p className='text-2xl'>Empowering nations with cutting-edge equipment,</p>
-          <p className='text-2xl'>advanced technology, and trusted expertise.</p>
-        </div>
-        <button className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'>
-          EXPLORE  
-          <ChevronRight size={20} className='text-white'/>
-        </button>
+        <Fade direction="up" duration={800} delay={200} triggerOnce>
+          <div>
+            <Slide direction="up" duration={600} delay={0} triggerOnce>
+              <h1 className='text-6xl font-normal font-heading leading-[100%]'>GLOBAL LEADERS IN</h1>
+            </Slide>
+            <Slide direction="up" duration={600} delay={100} triggerOnce>
+              <h1 className='text-6xl font-normal font-heading'>DEFENSE & SECURITY SOLUTIONS</h1>
+            </Slide>
+          </div>
+        </Fade>
+        <Fade direction="up" duration={800} delay={400} triggerOnce>
+          <div>
+            <p className='text-2xl'>Empowering nations with cutting-edge equipment,</p>
+            <p className='text-2xl'>advanced technology, and trusted expertise.</p>
+          </div>
+        </Fade>
+        <Fade direction="up" duration={800} delay={600} triggerOnce>
+          <button className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'>
+            EXPLORE  
+            <ChevronRight size={20} className='text-white'/>
+          </button>
+        </Fade>
       </div>
     );
   }
@@ -50,31 +61,38 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
 
   return (
     <div className='flex flex-col items-start justify-center h-[86.7vh] text-white gap-4 px-70'>
-      <div>
-        {headlineLines.map((line, index) => (
-          <h1 
-            key={index}
-            className={`text-6xl font-normal font-heading ${index === 0 ? 'leading-[100%]' : ''}`}
-          >
-            {line}
-          </h1>
-        ))}
-      </div>
-      <div>
-        {subtitleLines.map((line, index) => (
-          <p key={index} className='text-2xl'>
-            {line}
-          </p>
-        ))}
-      </div>
+      <Fade direction="up" duration={800} delay={200} triggerOnce>
+        <div>
+          {headlineLines.map((line, index) => (
+            <Slide key={index} direction="up" duration={600} delay={index * 100} triggerOnce>
+              <h1 
+                className={`text-6xl font-normal font-heading ${index === 0 ? 'leading-[100%]' : ''}`}
+              >
+                {line}
+              </h1>
+            </Slide>
+          ))}
+        </div>
+      </Fade>
+      <Fade direction="up" duration={800} delay={400} triggerOnce>
+        <div>
+          {subtitleLines.map((line, index) => (
+            <p key={index} className='text-2xl'>
+              {line}
+            </p>
+          ))}
+        </div>
+      </Fade>
       {hero.buttonText && hero.buttonAction && (
-        <Link 
-          href={hero.buttonAction}
-          className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'
-        >
-          {hero.buttonText}
-          <ChevronRight size={20} className='text-white'/>
-        </Link>
+        <Fade direction="up" duration={800} delay={600} triggerOnce>
+          <Link 
+            href={hero.buttonAction}
+            className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'
+          >
+            {hero.buttonText}
+            <ChevronRight size={20} className='text-white'/>
+          </Link>
+        </Fade>
       )}
     </div>
   );

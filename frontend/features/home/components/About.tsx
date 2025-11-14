@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import type { About as AboutType } from "@/features/about/services/aboutService";
 import { formatTextWithNewlines } from "@/utils/text.utils";
+import { Fade } from "react-awesome-reveal";
 
 interface AboutProps {
   about: AboutType | null;
@@ -23,10 +24,13 @@ export default function About({ about }: AboutProps) {
     <div className='bg-black h-[70vh] py-20 px-12'>
       <div className='w-full mx-auto border border-white'></div>
       <div className="ml-80 mr-40 mt-12 flex items-start gap-45">
-        <div className=" w-full">
-        <h1 className='text-brand text-xl flex items-center'> {label}</h1>
+          <div className=" w-full">
+          <Fade direction="up" duration={800} delay={200} triggerOnce>
+            <h1 className='text-brand text-xl flex items-center'> {label}</h1>
+          </Fade>
         </div>
         <div className="">
+          <Fade direction="up" duration={800} delay={400} triggerOnce>
           <p className="text-white text-4xl">
             {descriptionLines.map((line, index) => (
               <span key={index}>
@@ -35,21 +39,25 @@ export default function About({ about }: AboutProps) {
               </span>
             ))}
           </p>
+          </Fade>
           <div className="flex items-center mt-6 gap-3">
             {button1Text && (
+              <Fade direction="up" duration={800} delay={600} triggerOnce> 
               <Link href={button1Action} className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 mt-6'>
                 {button1Text}
                 <ChevronRight strokeWidth={.5} size={20}/>
               </Link>
+              </Fade>
             )}
             {button2Text && (
-              <Link 
+              <Fade direction="up" duration={800} delay={800} triggerOnce>  <Link 
                 href={companyProfileFile || "#"} 
                 className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 mt-6'
                 {...(companyProfileFile ? { download: true, target: "_blank" } : {})}
               >
                 {button2Text}
               </Link>
+              </Fade>
             )}
           </div>
         </div>

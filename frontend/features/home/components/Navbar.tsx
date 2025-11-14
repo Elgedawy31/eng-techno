@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Menu } from 'lucide-react';
+import { Fade } from 'react-awesome-reveal';
 
 const links = [
   { href: "/about-us", label: " ABOUT US" },
@@ -16,17 +19,18 @@ const links = [
 export default function Navbar() {
 
   return (
-    <nav className=" top-0 z-50 flex items-center justify-between py-8 w-full px-70">
-        {/* Logo */}
-        <Link 
-          href="/" 
-          className="text-2xl font-bold text-white transition-transform duration-300 hover:scale-110"
-        >
-          <Image src='/logo.svg' alt="Logo" width={58} height={58}/>
-        </Link>
+    <Fade duration={600} triggerOnce>
+      <nav className=" top-0 z-50 flex items-center justify-between py-8 w-full px-70">
+          {/* Logo */}
+          <Link 
+            href="/" 
+            className="text-2xl font-bold text-white transition-transform duration-300 hover:scale-110"
+          >
+            <Image src='/logo.svg' alt="Logo" width={58} height={58}/>
+          </Link>
 
-        {/* Desktop Links */}
-        <div className="flex items-center gap-8">
+          {/* Desktop Links */}
+          <div className="flex items-center gap-8">
           {links.map((link) => (
             <Link
               key={link.label}
@@ -62,6 +66,7 @@ export default function Navbar() {
             FR
           </button>
         </div>
-    </nav>
+      </nav>
+    </Fade>
   );
 }
