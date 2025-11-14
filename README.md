@@ -123,8 +123,6 @@ The application includes comprehensive SEO optimization with proper meta tags ha
 - ESLint 9 with Next.js config (`frontend/eslint.config.mjs`)
 - Prettier configured for both frontend and backend (`.prettierrc.json`)
 
-## Deployment
-
 ## Links
 
 - GitHub Repository: git@github.com:Elgedawy31/eng-techno.git
