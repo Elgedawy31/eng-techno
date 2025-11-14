@@ -1,12 +1,10 @@
-import GlobalBackground from '@/assets/global-bg.png'
-import GlobalImage from '@/assets/global-image.png';
 import Image from 'next/image';
 
 export default function Global() {
   return (
     <div 
     className="min-h-screen bg-cover"
-    style={{ backgroundImage: `url(${GlobalBackground.src})` }}
+    style={{ backgroundImage: `url(/global-bg.png)` }}
     >
       <div className="w-full h-full bg-white/20 flex flex-col gap-20  py-25 px-20">
         <div className="w-1/2">
@@ -20,7 +18,7 @@ export default function Global() {
           </p>
         </div>
         <div className="flex gap-20">
-          <Image src={GlobalImage} alt='global' width={720} height={786}/>
+          <Image src='/global-image.png' alt='global' width={720} height={786}/>
           <p className='text-3xl w-1/2'>
             With decades of experience and a robust presence across 30+ countries, 
             our operations are supported by a global network of over 4,000 defense and security 

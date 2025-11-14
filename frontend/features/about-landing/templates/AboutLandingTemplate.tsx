@@ -1,10 +1,11 @@
 import Navbar from '@/features/home/components/Navbar'
+import Global from '../components/Global'
 
 function AboutLandingTemplate() {
   return (
     <div>
       <div 
-        className="h-screen bg-cover"
+        className="h-[80vh] bg-cover"
         style={{ backgroundImage: `url(/about-hero-bg.png)` }}
         >
           <div className="w-full h-full bg-black/20 flex flex-col justify-between pb-12">
@@ -12,10 +13,10 @@ function AboutLandingTemplate() {
             <p className='text-[#C3996C] text-2xl flex items-center ml-30'><span className="text-lg">{"//"}</span>ABOUT US</p>
           </div>
       </div>
-      {/* <Global />
-      <OurSection />
-      <CoreValues />
-      <Compliance /> */}
+      <Global />
+      {/* <OurSection /> */}
+      {/* <CoreValues /> */}
+      {/* <Compliance /> */}
     </div>
   )
 }
