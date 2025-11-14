@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersIcon, ImageIcon, FileText, Briefcase, Search } from "lucide-react";
+import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
@@ -35,6 +35,12 @@ const sidebarItems = [
     title:"Search Sections",
     href: "/admin/search",
     icon: Search,
+    roles: ["admin"], 
+  },
+  {
+    title:"Media Centre",
+    href: "/admin/mediaCentre",
+    icon: Newspaper,
     roles: ["admin"], 
   },
 ];
