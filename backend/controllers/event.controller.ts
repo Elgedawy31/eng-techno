@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { EventModel } from "../models/event.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getEvents = async (
   req: Request,
@@ -89,26 +89,34 @@ export const createEvent = async (
       );
     }
 
-    const files = req.files as Express.Multer.File[];
-    let logoPath: string | undefined;
-    const displayImagePaths: string[] = [];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    let logoUrl: string | undefined;
+    const displayImageUrls: string[] = [];
 
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const imagePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "eventLogoImage") {
-          logoPath = imagePath;
-        } else if (file.fieldname === "displayImages") {
-          displayImagePaths.push(imagePath);
+    if (files) {
+      // Handle logo image
+      if (files.eventLogoImage && files.eventLogoImage.length > 0) {
+        const logoFile = files.eventLogoImage[0];
+        logoUrl = await processFileUpload(logoFile, "event", "logo");
+        if (!logoUrl) {
+          throw new AppError("Failed to upload logo image", 500);
         }
-      });
+      }
+
+      // Handle display images
+      if (files.displayImages && files.displayImages.length > 0) {
+        const uploadPromises = files.displayImages.map((file) =>
+          processFileUpload(file, "event", "display")
+        );
+        const uploadedUrls = await Promise.all(uploadPromises);
+        const validUrls = uploadedUrls.filter((url): url is string => url !== undefined);
+        displayImageUrls.push(...validUrls);
+      }
     }
 
     // Parse displayImages if provided as string/JSON
-    let parsedDisplayImages: string[] = displayImagePaths;
-    if (displayImages && displayImagePaths.length === 0) {
+    let parsedDisplayImages: string[] = displayImageUrls;
+    if (displayImages && displayImageUrls.length === 0) {
       if (typeof displayImages === "string") {
         try {
           parsedDisplayImages = JSON.parse(displayImages);
@@ -123,7 +131,7 @@ export const createEvent = async (
     const event = await EventModel.create({
       title,
       shortDescription,
-      eventLogoImage: logoPath,
+      eventLogoImage: logoUrl,
       eventDateText: eventDateText || undefined,
       detailsButtonText,
       detailsButtonAction,
@@ -159,7 +167,7 @@ export const updateEvent = async (
       order,
       isActive,
     } = req.body;
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
 
     const event = await EventModel.findById(id);
 
@@ -168,26 +176,37 @@ export const updateEvent = async (
     }
 
     // Handle file uploads
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const imagePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "eventLogoImage") {
-          // Delete old logo if exists
-          if (event.eventLogoImage) {
-            const oldLogoPath = event.eventLogoImage.replace("/uploads/", "uploads/");
-            deleteFile(oldLogoPath).catch((err) => console.error("Error deleting old logo:", err));
+    if (files) {
+      // Handle logo image
+      if (files.eventLogoImage && files.eventLogoImage.length > 0) {
+        // Delete old logo if exists
+        if (event.eventLogoImage) {
+          try {
+            await deleteFile(event.eventLogoImage);
+          } catch (err) {
+            console.error("Error deleting old logo:", err);
           }
-          event.eventLogoImage = imagePath;
-        } else if (file.fieldname === "displayImages") {
-          // Add new display images
-          if (!event.displayImages) {
-            event.displayImages = [];
-          }
-          event.displayImages.push(imagePath);
         }
-      });
+        const logoFile = files.eventLogoImage[0];
+        const logoUrl = await processFileUpload(logoFile, "event", "logo");
+        if (!logoUrl) {
+          throw new AppError("Failed to upload logo image", 500);
+        }
+        event.eventLogoImage = logoUrl;
+      }
+
+      // Handle display images
+      if (files.displayImages && files.displayImages.length > 0) {
+        if (!event.displayImages) {
+          event.displayImages = [];
+        }
+        const uploadPromises = files.displayImages.map((file) =>
+          processFileUpload(file, "event", "display")
+        );
+        const uploadedUrls = await Promise.all(uploadPromises);
+        const validUrls = uploadedUrls.filter((url): url is string => url !== undefined);
+        event.displayImages.push(...validUrls);
+      }
     }
 
     // Update other fields if provided
@@ -196,7 +215,7 @@ export const updateEvent = async (
     if (eventDateText !== undefined) event.eventDateText = eventDateText || undefined;
     if (detailsButtonText) event.detailsButtonText = detailsButtonText;
     if (detailsButtonAction) event.detailsButtonAction = detailsButtonAction;
-    if (displayImages !== undefined && (!files || files.filter(f => f.fieldname === "displayImages").length === 0)) {
+    if (displayImages !== undefined && (!files || !files.displayImages || files.displayImages.length === 0)) {
       let parsedDisplayImages: string[] = [];
       if (typeof displayImages === "string") {
         try {
@@ -252,9 +271,8 @@ export const deleteEventImage = async (
     }
 
     // Delete the file
-    const filePath = imagePath.replace("/uploads/", "uploads/");
     try {
-      await deleteFile(filePath);
+      await deleteFile(imagePath);
     } catch (error) {
       console.error("Error deleting image file:", error);
     }
@@ -314,14 +332,12 @@ export const deleteEvent = async (
     const deletePromises: Promise<void>[] = [];
 
     if (event.eventLogoImage) {
-      const logoPath = event.eventLogoImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(logoPath).catch((err) => console.error("Error deleting logo:", err)));
+      deletePromises.push(deleteFile(event.eventLogoImage).catch((err) => console.error("Error deleting logo:", err)));
     }
 
     if (event.displayImages && event.displayImages.length > 0) {
       event.displayImages.forEach((imagePath) => {
-        const filePath = imagePath.replace("/uploads/", "uploads/");
-        deletePromises.push(deleteFile(filePath).catch((err) => console.error("Error deleting image:", err)));
+        deletePromises.push(deleteFile(imagePath).catch((err) => console.error("Error deleting image:", err)));
       });
     }
 

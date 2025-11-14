@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper } from "lucide-react";
+import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
@@ -41,6 +41,12 @@ const sidebarItems = [
     title:"Media Centre",
     href: "/admin/mediaCentre",
     icon: Newspaper,
+    roles: ["admin"], 
+  },
+  {
+    title:"Events",
+    href: "/admin/event",
+    icon: Calendar,
     roles: ["admin"], 
   },
 ];
