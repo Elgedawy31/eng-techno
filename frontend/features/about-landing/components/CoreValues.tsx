@@ -1,37 +1,35 @@
+"use client";
+
 import CoreCard from './CoreCard'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
+import CoreValuesHeader from './CoreValuesHeader'
+import { useCoreValues } from '@/features/coreValue/hooks/useCoreValues'
+import { Fade } from 'react-awesome-reveal'
 
 export default function CoreValues() {
+  const { coreValues } = useCoreValues();
+  
+  // Filter active core values and sort by order
+  const activeCoreValues = coreValues
+    .filter(cv => cv.isActive)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
   return (
     <div className="bg-[#F1F2F2]">
 
     <div className=' py-25 px-20'>
-      <div className="w-2/3 mb-16">
-        <h1 className='text-3xl text-[#C3996C] flex items-center mb-3'><span className='text-2xl'>{"//"}</span>CORE VALUES</h1>
-        <p className='text-4xl font-medium'>
-          At Amstone International Group, our work is guided by a set of
-          non-negotiable values that define who we are and how we serve.
-        </p>
-      </div>
+      <CoreValuesHeader />
       <div className="grid grid-cols-4 gap-25">
-        <CoreCard 
-          title='INTEGRITY'
-          text='We uphold the highest ethical standards and ensure full compliance with international regulations.'
-          />
-          <CoreCard 
-          title='INNOVATION'
-          text='We harness cutting-edge technologies to deliver superior defense capabilities.'
-          />
-          <CoreCard 
-          title='COMMITMENT'
-          text='We are dedicated to meeting the evolving needs of our partners with professionalism and precision.'
-          />
-          <CoreCard 
-          title='EXCELLENCE'
-          text='We strive for unmatched quality in every product, service, and collaboration.'
-          />
-        </div>
+        {activeCoreValues.map((coreValue, index) => (
+          <Fade key={coreValue._id} direction="up" duration={800} delay={index * 100} triggerOnce>
+            <CoreCard 
+              title={coreValue.title}
+              text={coreValue.description}
+            />
+          </Fade>
+        ))}
+      </div>
       </div>
         <div className="flex h-[750px]">
           <div className="bg-black text-center w-1/5">
