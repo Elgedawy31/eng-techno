@@ -1,29 +1,14 @@
-import HeroBackground from "@/assets/hero-bg.png"
-import About from "@/component/home/About";
-import Footer from "@/component/home/Footer";
-import GroupSection from "@/component/home/GroupSection";
-import HeroSection from "@/component/home/HeroSection";
-import Industry from "@/component/home/Industry";
-import Navbar from "@/component/home/Navbar";
-import SearchSection from "@/component/home/SearchSection";
+import HomeTemplate from '@/features/home/templates/HomeTemplate'
+import { fetchHero } from "@/features/hero/services/heroServerService";
+import { fetchAbout } from "@/features/about/services/aboutServerService";
+import { fetchServices } from "@/features/service/services/serviceServerService";
 
-export default function Home() {
-  return (
-    <div className="">
-      <div 
-      className="h-screen bg-cover"
-      style={{ backgroundImage: `url(${HeroBackground.src})` }}
-      >
-        <div className="w-full h-full bg-black/20">
-          <Navbar />
-          <HeroSection />
-        </div>
-      </div>
-      <About />
-      <GroupSection />
-      <SearchSection />
-      <Industry />
-      <Footer />
-    </div>
-  );
+export default async function Home() {
+  const [hero, about, services] = await Promise.all([
+    fetchHero(),
+    fetchAbout(),
+    fetchServices(),
+  ]);
+
+  return <HomeTemplate hero={hero ?? null} about={about ?? null} services={services ?? []} />;
 }

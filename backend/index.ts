@@ -24,12 +24,7 @@ const app: Application = express();
 
 app.use(helmet());
 app.use(
-  cors({
-    origin: env.frontendUrl || "http://localhost:3000",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  cors({origin:'*'})
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,11 +38,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: env.nodeEnv === "production",
       httpOnly: true,
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      ...(env.cookieDomain && { domain: env.cookieDomain }),
     },
   })
 );
