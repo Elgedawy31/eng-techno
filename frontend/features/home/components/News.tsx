@@ -7,7 +7,7 @@ export default function News() {
     <div className='flex gap-4 mt-12 h-[400px] '>
       <div className="flex flex-col items-start justify-between w-1/2 pb-10">
         <div className="space-y-2">
-          <h1 className='text-lg'>International Airshows & Defense Summits – 2024</h1>
+          <h1 className='text-xl text-foreground font-bold'>International Airshows & Defense Summits – 2024</h1>
           <p className='text-[17px] text-[#808285] w-1/2'>
             Actively present at global airshows, Techno 
             showcases advanced aircraft, UAV, and drone 
