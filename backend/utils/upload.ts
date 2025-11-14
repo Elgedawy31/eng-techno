@@ -29,6 +29,20 @@ const imageFilter = (
   }
 };
 
+// File filter for PDFs
+const pdfFilter = (
+  req: Express.Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  const allowedMimes = ["application/pdf"];
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("File type not supported. Please use PDF"));
+  }
+};
+
 const userStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const userPath = ensureUploadsDir("users");
@@ -66,6 +80,46 @@ export const uploadHero = multer({
   fileFilter: imageFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
+  },
+});
+
+const aboutStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const aboutPath = ensureUploadsDir("about");
+    cb(null, aboutPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `company-profile-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadAbout = multer({
+  storage: aboutStorage,
+  fileFilter: pdfFilter,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB max file size for PDF files
+  },
+});
+
+const serviceStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const servicePath = ensureUploadsDir("services");
+    cb(null, servicePath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `service-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadService = multer({
+  storage: serviceStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for service images
   },
 });
 
