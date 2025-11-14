@@ -6,14 +6,16 @@ import Navbar from "../components/Navbar";
 import SearchSection from "../components/SearchSection";
 import type { Hero } from "@/features/hero/services/heroService";
 import type { About as AboutType } from "@/features/about/services/aboutService";
+import type { Service } from "@/features/service/services/serviceService";
 import { formatTextWithNewlines } from "@/utils/text.utils";
 
 interface HomeTemplateProps {
   hero: Hero | null;
   about: AboutType | null;
+  services: Service[];
 }
 
-function HomeTemplate({ hero, about }: HomeTemplateProps) {
+function HomeTemplate({ hero, about, services }: HomeTemplateProps) {
   const backgroundImage = hero?.backgroundImage || "/hero-bg.png";
   
   const processedHero = hero
@@ -36,7 +38,7 @@ function HomeTemplate({ hero, about }: HomeTemplateProps) {
         </div>
       </div>
       <About about={about} />
-      <GroupSection />
+      <GroupSection services={services} />
       <SearchSection />
       <Industry />
     </main>
