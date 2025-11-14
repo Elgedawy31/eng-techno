@@ -5,7 +5,6 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import session from "express-session";
-import passport from "passport";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -15,7 +14,6 @@ import { env } from "./config/env";
 import { connectDatabase } from "./config/database";
 import { router as apiRouter } from "./routes";
 import { initDefaultAdmin } from "./utils/initDefaultAdmin";
-import "./config/passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,9 +52,6 @@ app.use(
   })
 );
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Serve static files from uploads directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
