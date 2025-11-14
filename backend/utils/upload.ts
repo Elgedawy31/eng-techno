@@ -197,7 +197,8 @@ export const uploadFileToCloudinary = async (
 export const processFileUpload = async (
   file: Express.Multer.File | undefined,
   folder: string,
-  fieldName?: string
+  fieldName?: string,
+  resourceType: "image" | "video" | "raw" = "image"
 ): Promise<string | undefined> => {
   if (!file || !file.buffer) {
     return undefined;
@@ -208,7 +209,7 @@ export const processFileUpload = async (
     ? `${folder}-${fieldName}-${uniqueSuffix}` 
     : `${folder}-${uniqueSuffix}`;
   
-  const result = await uploadToCloudinary(file.buffer, folder, publicId);
+  const result = await uploadToCloudinary(file.buffer, folder, publicId, resourceType);
   return result.secure_url;
 };
 

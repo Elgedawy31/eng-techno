@@ -168,20 +168,25 @@ export const updateHero = async (
       throw new AppError("Hero section not found", 404);
     }
 
-    // If new image is uploaded, delete old one
+    // If new image is uploaded, delete old one and upload new one
     if (file) {
+      // Upload new image first
+      const imageUrl = await processFileUpload(file, "hero", "background");
+      if (!imageUrl) {
+        throw new AppError("Failed to upload image", 500);
+      }
+
+      // Delete old image after successful upload (don't block on delete errors)
       if (hero.backgroundImage) {
         try {
           await deleteFile(hero.backgroundImage);
         } catch (error) {
-          console.error("Error deleting old image:", error);
+          // Log error but don't fail the update since new image is already uploaded
+          console.error("Error deleting old image (non-critical):", error);
         }
       }
 
-      const imageUrl = await processFileUpload(file, "hero", "background");
-      if (imageUrl) {
-        hero.backgroundImage = imageUrl;
-      }
+      hero.backgroundImage = imageUrl;
     }
 
     // Update other fields if provided
