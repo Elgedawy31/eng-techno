@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { MissionVisionModel } from "../models/missionVision.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getMissionVision = async (
   req: Request,
@@ -93,27 +93,48 @@ export const createOrUpdateMissionVision = async (
       );
     }
 
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     let missionLogoPath: string | undefined;
     let missionImagePath: string | undefined;
     let visionLogoPath: string | undefined;
     let visionImagePath: string | undefined;
 
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "missionLogoImage") {
-          missionLogoPath = filePath;
-        } else if (file.fieldname === "missionImage") {
-          missionImagePath = filePath;
-        } else if (file.fieldname === "visionLogoImage") {
-          visionLogoPath = filePath;
-        } else if (file.fieldname === "visionImage") {
-          visionImagePath = filePath;
+    if (files) {
+      // Handle missionLogoImage
+      if (files.missionLogoImage && files.missionLogoImage.length > 0) {
+        const imageUrl = await processFileUpload(files.missionLogoImage[0], "mission-vision", "mission-logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload mission logo image", 500);
         }
-      });
+        missionLogoPath = imageUrl;
+      }
+
+      // Handle missionImage
+      if (files.missionImage && files.missionImage.length > 0) {
+        const imageUrl = await processFileUpload(files.missionImage[0], "mission-vision", "mission");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload mission image", 500);
+        }
+        missionImagePath = imageUrl;
+      }
+
+      // Handle visionLogoImage
+      if (files.visionLogoImage && files.visionLogoImage.length > 0) {
+        const imageUrl = await processFileUpload(files.visionLogoImage[0], "mission-vision", "vision-logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload vision logo image", 500);
+        }
+        visionLogoPath = imageUrl;
+      }
+
+      // Handle visionImage
+      if (files.visionImage && files.visionImage.length > 0) {
+        const imageUrl = await processFileUpload(files.visionImage[0], "mission-vision", "vision");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload vision image", 500);
+        }
+        visionImagePath = imageUrl;
+      }
     }
 
     // Check if mission vision already exists (singleton pattern)
@@ -122,20 +143,32 @@ export const createOrUpdateMissionVision = async (
     if (existingMissionVision) {
       // Delete old files if new ones are uploaded
       if (missionLogoPath && existingMissionVision.missionLogoImage) {
-        const oldPath = existingMissionVision.missionLogoImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old mission logo:", err));
+        try {
+          await deleteFile(existingMissionVision.missionLogoImage);
+        } catch (error) {
+          console.error("Error deleting old mission logo:", error);
+        }
       }
       if (missionImagePath && existingMissionVision.missionImage) {
-        const oldPath = existingMissionVision.missionImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old mission image:", err));
+        try {
+          await deleteFile(existingMissionVision.missionImage);
+        } catch (error) {
+          console.error("Error deleting old mission image:", error);
+        }
       }
       if (visionLogoPath && existingMissionVision.visionLogoImage) {
-        const oldPath = existingMissionVision.visionLogoImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old vision logo:", err));
+        try {
+          await deleteFile(existingMissionVision.visionLogoImage);
+        } catch (error) {
+          console.error("Error deleting old vision logo:", error);
+        }
       }
       if (visionImagePath && existingMissionVision.visionImage) {
-        const oldPath = existingMissionVision.visionImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old vision image:", err));
+        try {
+          await deleteFile(existingMissionVision.visionImage);
+        } catch (error) {
+          console.error("Error deleting old vision image:", error);
+        }
       }
 
       // Update existing mission vision
@@ -197,7 +230,7 @@ export const updateMissionVision = async (
       visionDescription,
       isActive,
     } = req.body;
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const missionVision = await MissionVisionModel.findById(id);
 
@@ -206,37 +239,70 @@ export const updateMissionVision = async (
     }
 
     // Handle file uploads
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "missionLogoImage") {
-          if (missionVision.missionLogoImage) {
-            const oldPath = missionVision.missionLogoImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old mission logo:", err));
+    if (files) {
+      // Handle missionLogoImage
+      if (files.missionLogoImage && files.missionLogoImage.length > 0) {
+        if (missionVision.missionLogoImage) {
+          try {
+            await deleteFile(missionVision.missionLogoImage);
+          } catch (error) {
+            console.error("Error deleting old mission logo:", error);
           }
-          missionVision.missionLogoImage = filePath;
-        } else if (file.fieldname === "missionImage") {
-          if (missionVision.missionImage) {
-            const oldPath = missionVision.missionImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old mission image:", err));
-          }
-          missionVision.missionImage = filePath;
-        } else if (file.fieldname === "visionLogoImage") {
-          if (missionVision.visionLogoImage) {
-            const oldPath = missionVision.visionLogoImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old vision logo:", err));
-          }
-          missionVision.visionLogoImage = filePath;
-        } else if (file.fieldname === "visionImage") {
-          if (missionVision.visionImage) {
-            const oldPath = missionVision.visionImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old vision image:", err));
-          }
-          missionVision.visionImage = filePath;
         }
-      });
+        const imageUrl = await processFileUpload(files.missionLogoImage[0], "mission-vision", "mission-logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload mission logo image", 500);
+        }
+        missionVision.missionLogoImage = imageUrl;
+      }
+
+      // Handle missionImage
+      if (files.missionImage && files.missionImage.length > 0) {
+        if (missionVision.missionImage) {
+          try {
+            await deleteFile(missionVision.missionImage);
+          } catch (error) {
+            console.error("Error deleting old mission image:", error);
+          }
+        }
+        const imageUrl = await processFileUpload(files.missionImage[0], "mission-vision", "mission");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload mission image", 500);
+        }
+        missionVision.missionImage = imageUrl;
+      }
+
+      // Handle visionLogoImage
+      if (files.visionLogoImage && files.visionLogoImage.length > 0) {
+        if (missionVision.visionLogoImage) {
+          try {
+            await deleteFile(missionVision.visionLogoImage);
+          } catch (error) {
+            console.error("Error deleting old vision logo:", error);
+          }
+        }
+        const imageUrl = await processFileUpload(files.visionLogoImage[0], "mission-vision", "vision-logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload vision logo image", 500);
+        }
+        missionVision.visionLogoImage = imageUrl;
+      }
+
+      // Handle visionImage
+      if (files.visionImage && files.visionImage.length > 0) {
+        if (missionVision.visionImage) {
+          try {
+            await deleteFile(missionVision.visionImage);
+          } catch (error) {
+            console.error("Error deleting old vision image:", error);
+          }
+        }
+        const imageUrl = await processFileUpload(files.visionImage[0], "mission-vision", "vision");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload vision image", 500);
+        }
+        missionVision.visionImage = imageUrl;
+      }
     }
 
     // Update other fields if provided
@@ -305,23 +371,19 @@ export const deleteMissionVision = async (
     const deletePromises: Promise<void>[] = [];
 
     if (missionVision.missionLogoImage) {
-      const path = missionVision.missionLogoImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting mission logo:", err)));
+      deletePromises.push(deleteFile(missionVision.missionLogoImage).catch((err) => console.error("Error deleting mission logo:", err)));
     }
 
     if (missionVision.missionImage) {
-      const path = missionVision.missionImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting mission image:", err)));
+      deletePromises.push(deleteFile(missionVision.missionImage).catch((err) => console.error("Error deleting mission image:", err)));
     }
 
     if (missionVision.visionLogoImage) {
-      const path = missionVision.visionLogoImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting vision logo:", err)));
+      deletePromises.push(deleteFile(missionVision.visionLogoImage).catch((err) => console.error("Error deleting vision logo:", err)));
     }
 
     if (missionVision.visionImage) {
-      const path = missionVision.visionImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting vision image:", err)));
+      deletePromises.push(deleteFile(missionVision.visionImage).catch((err) => console.error("Error deleting vision image:", err)));
     }
 
     await Promise.all(deletePromises);
