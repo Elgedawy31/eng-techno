@@ -7,6 +7,7 @@ import CoreValues from '../components/CoreValues'
 import Compliance from '../components/Compliance'
 import { useAboutPageHero } from '@/features/aboutPageHero/hooks/useAboutPageHero'
 import { Fade } from 'react-awesome-reveal'
+import OurClients from '../components/OurClients';
 
 function AboutLandingTemplate() {
   const { aboutPageHero } = useAboutPageHero()
@@ -33,6 +34,7 @@ function AboutLandingTemplate() {
       </div>
       <Global />
       <OurSection />
+      <OurClients />
       <CoreValues />
       <Compliance />
     </div>
