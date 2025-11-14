@@ -86,13 +86,33 @@ These credentials are automatically created on first run if they don't exist. Ma
 
 ## API Endpoints
 
-All endpoints prefixed with `/api`. Admin routes require authentication.
+All endpoints are prefixed with `/api`. Admin routes require authentication.
 
-**Auth:** `POST /api/auth/login`, `GET /api/auth/check-auth`, `GET /api/auth/user-data`, `GET /api/auth/logout`
+**Auth:**
+- `POST /auth/login`
+- `GET /auth/check-auth`
+- `GET /auth/user-data`
+- `GET /auth/logout`
 
-**Content (GET public, CRUD admin):** `/api/hero`, `/api/about`, `/api/services`, `/api/events`, `/api/announcements`, `/api/media-centre`, `/api/about-page-hero`, `/api/about-page-content`, `/api/client-partners`, `/api/mission-vision`, `/api/core-values`, `/api/compliance-quality`, `/api/footer`
+**Content (GET public, CRUD admin):**
+- `/hero`
+- `/about`
+- `/services`
+- `/events`
+- `/announcements`
+- `/media-centre`
+- `/about-page-hero`
+- `/about-page-content`
+- `/client-partners`
+- `/mission-vision`
+- `/core-values`
+- `/compliance-quality`
+- `/footer`
 
-**Other:** `/api/search` (public), `/api/users` (admin only), `/health` (health check)
+**Other:**
+- `/search` (public)
+- `/users` (admin only)
+- `/health` (health check)
 
 ## SEO & Meta Tags
 
@@ -105,26 +125,10 @@ The application includes comprehensive SEO optimization with proper meta tags ha
 
 ## Deployment
 
-**Frontend (Vercel):**
-- Framework: Next.js
-- Root: `frontend`
-- Build: `bun run build`
-- Update `BASE_URL` in `utils/constants.ts`
-
-**Backend (Railway/Render/Fly.io):**
-- Root: `backend`
-- Build: `bun install`
-- Start: `bun run index.ts`
-- Set all environment variables
-
-**MongoDB:** Use MongoDB Atlas for production
-
-**Post-Deployment:** Update `BASE_URL`, set secure `JWT_SECRET`, configure CORS, set up MongoDB Atlas, configure Cloudinary, change default admin credentials, enable HTTPS
-
 ## Links
 
 - GitHub Repository: git@github.com:Elgedawy31/eng-techno.git
-- Live Demo: [Add your live URL here]   
+- Live Demo: https://eng-techno-2.vercel.app/  
 
 ## Author
 
