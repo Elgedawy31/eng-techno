@@ -1,5 +1,6 @@
 import Navbar from '@/features/home/components/Navbar'
 import Global from '../components/Global'
+import OurSection from '../components/OurSection'
 
 function AboutLandingTemplate() {
   return (
@@ -14,7 +15,7 @@ function AboutLandingTemplate() {
           </div>
       </div>
       <Global />
-      {/* <OurSection /> */}
+      <OurSection />
       {/* <CoreValues /> */}
       {/* <Compliance /> */}
     </div>
