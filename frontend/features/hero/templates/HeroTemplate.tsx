@@ -3,6 +3,8 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ar";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { PageHeader } from "@/components/shared/PageHeader";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
@@ -21,6 +23,7 @@ import { AlertCircle, ImageIcon, Plus } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { HeroDialog } from "../components/HeroDialog";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 function HeroTemplate() {
   const { heroes, isLoading, isError, error } = useHeroes();
@@ -30,6 +33,11 @@ function HeroTemplate() {
   const [editingHero, setEditingHero] = useState<Hero | null>(null);
   const [deletingHero, setDeletingHero] = useState<Hero | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // Get heroes with images for lightbox
+  const heroesWithImages = heroes.filter((hero) => hero.backgroundImage);
 
   const columns: ColumnDef<Hero>[] = [
     {
@@ -37,8 +45,29 @@ function HeroTemplate() {
       header: "Image",
       cell: ({ row }) => {
         const imageUrl = row.getValue("backgroundImage") as string;
+        const hero = row.original;
+        
+        const handleImageClick = () => {
+          if (imageUrl) {
+            // Find the index in the filtered array
+            const lightboxIdx = heroesWithImages.findIndex(
+              (h) => h._id === hero._id
+            );
+            if (lightboxIdx !== -1) {
+              setLightboxIndex(lightboxIdx);
+              setLightboxOpen(true);
+            }
+          }
+        };
+
         return (
-          <div className="w-20 h-20 rounded-lg overflow-hidden border border-border">
+          <div 
+            className={cn(
+              "w-20 h-20 rounded-lg overflow-hidden border border-border",
+              imageUrl && "cursor-pointer hover:opacity-80 transition-opacity"
+            )}
+            onClick={handleImageClick}
+          >
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -230,6 +259,17 @@ function HeroTemplate() {
           )}
         </div>
       )}
+
+      {/* Lightbox for image preview */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={heroesWithImages.map((hero) => ({
+          src: hero.backgroundImage,
+          alt: hero.headline || "Hero background",
+        }))}
+      />
     </section>
   );
 }
