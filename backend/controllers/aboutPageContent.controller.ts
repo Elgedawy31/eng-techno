@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { AboutPageContentModel } from "../models/aboutPageContent.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getAboutPageContent = async (
   req: Request,
@@ -94,24 +94,38 @@ export const createOrUpdateAboutPageContent = async (
       );
     }
 
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     let backgroundPath: string | undefined;
     let logoPath: string | undefined;
     let profilePath: string | undefined;
 
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "backgroundImage") {
-          backgroundPath = filePath;
-        } else if (file.fieldname === "logoImage") {
-          logoPath = filePath;
-        } else if (file.fieldname === "companyProfileFile") {
-          profilePath = filePath;
+    if (files) {
+      // Handle backgroundImage
+      if (files.backgroundImage && files.backgroundImage.length > 0) {
+        const imageUrl = await processFileUpload(files.backgroundImage[0], "about-page-content", "background");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload background image", 500);
         }
-      });
+        backgroundPath = imageUrl;
+      }
+
+      // Handle logoImage
+      if (files.logoImage && files.logoImage.length > 0) {
+        const imageUrl = await processFileUpload(files.logoImage[0], "about-page-content", "logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload logo image", 500);
+        }
+        logoPath = imageUrl;
+      }
+
+      // Handle companyProfileFile (PDF)
+      if (files.companyProfileFile && files.companyProfileFile.length > 0) {
+        const fileUrl = await processFileUpload(files.companyProfileFile[0], "about-page-content", "company-profile", "raw");
+        if (!fileUrl) {
+          throw new AppError("Failed to upload company profile file", 500);
+        }
+        profilePath = fileUrl;
+      }
     }
 
     if (!backgroundPath) {
@@ -124,25 +138,22 @@ export const createOrUpdateAboutPageContent = async (
     if (existingContent) {
       // Delete old files if new ones are uploaded
       if (backgroundPath && existingContent.backgroundImage) {
-        const oldBgPath = existingContent.backgroundImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldBgPath);
+          await deleteFile(existingContent.backgroundImage);
         } catch (error) {
           console.error("Error deleting old background:", error);
         }
       }
       if (logoPath && existingContent.logoImage) {
-        const oldLogoPath = existingContent.logoImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldLogoPath);
+          await deleteFile(existingContent.logoImage);
         } catch (error) {
           console.error("Error deleting old logo:", error);
         }
       }
       if (profilePath && existingContent.companyProfileFile) {
-        const oldProfilePath = existingContent.companyProfileFile.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldProfilePath);
+          await deleteFile(existingContent.companyProfileFile);
         } catch (error) {
           console.error("Error deleting old profile file:", error);
         }
@@ -208,7 +219,7 @@ export const updateAboutPageContent = async (
       buttonAction,
       isActive,
     } = req.body;
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const content = await AboutPageContentModel.findById(id);
 
@@ -217,34 +228,54 @@ export const updateAboutPageContent = async (
     }
 
     // Handle file uploads
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "backgroundImage") {
-          // Delete old background if exists
-          if (content.backgroundImage) {
-            const oldBgPath = content.backgroundImage.replace("/uploads/", "uploads/");
-            deleteFile(oldBgPath).catch((err) => console.error("Error deleting old background:", err));
+    if (files) {
+      // Handle backgroundImage
+      if (files.backgroundImage && files.backgroundImage.length > 0) {
+        if (content.backgroundImage) {
+          try {
+            await deleteFile(content.backgroundImage);
+          } catch (error) {
+            console.error("Error deleting old background:", error);
           }
-          content.backgroundImage = filePath;
-        } else if (file.fieldname === "logoImage") {
-          // Delete old logo if exists
-          if (content.logoImage) {
-            const oldLogoPath = content.logoImage.replace("/uploads/", "uploads/");
-            deleteFile(oldLogoPath).catch((err) => console.error("Error deleting old logo:", err));
-          }
-          content.logoImage = filePath;
-        } else if (file.fieldname === "companyProfileFile") {
-          // Delete old profile file if exists
-          if (content.companyProfileFile) {
-            const oldProfilePath = content.companyProfileFile.replace("/uploads/", "uploads/");
-            deleteFile(oldProfilePath).catch((err) => console.error("Error deleting old profile file:", err));
-          }
-          content.companyProfileFile = filePath;
         }
-      });
+        const imageUrl = await processFileUpload(files.backgroundImage[0], "about-page-content", "background");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload background image", 500);
+        }
+        content.backgroundImage = imageUrl;
+      }
+
+      // Handle logoImage
+      if (files.logoImage && files.logoImage.length > 0) {
+        if (content.logoImage) {
+          try {
+            await deleteFile(content.logoImage);
+          } catch (error) {
+            console.error("Error deleting old logo:", error);
+          }
+        }
+        const imageUrl = await processFileUpload(files.logoImage[0], "about-page-content", "logo");
+        if (!imageUrl) {
+          throw new AppError("Failed to upload logo image", 500);
+        }
+        content.logoImage = imageUrl;
+      }
+
+      // Handle companyProfileFile (PDF)
+      if (files.companyProfileFile && files.companyProfileFile.length > 0) {
+        if (content.companyProfileFile) {
+          try {
+            await deleteFile(content.companyProfileFile);
+          } catch (error) {
+            console.error("Error deleting old profile file:", error);
+          }
+        }
+        const fileUrl = await processFileUpload(files.companyProfileFile[0], "about-page-content", "company-profile", "raw");
+        if (!fileUrl) {
+          throw new AppError("Failed to upload company profile file", 500);
+        }
+        content.companyProfileFile = fileUrl;
+      }
     }
 
     // Update other fields if provided
@@ -314,18 +345,15 @@ export const deleteAboutPageContent = async (
     const deletePromises: Promise<void>[] = [];
 
     if (content.backgroundImage) {
-      const bgPath = content.backgroundImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(bgPath).catch((err) => console.error("Error deleting background:", err)));
+      deletePromises.push(deleteFile(content.backgroundImage).catch((err) => console.error("Error deleting background:", err)));
     }
 
     if (content.logoImage) {
-      const logoPath = content.logoImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(logoPath).catch((err) => console.error("Error deleting logo:", err)));
+      deletePromises.push(deleteFile(content.logoImage).catch((err) => console.error("Error deleting logo:", err)));
     }
 
     if (content.companyProfileFile) {
-      const profilePath = content.companyProfileFile.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(profilePath).catch((err) => console.error("Error deleting profile file:", err)));
+      deletePromises.push(deleteFile(content.companyProfileFile).catch((err) => console.error("Error deleting profile file:", err)));
     }
 
     await Promise.all(deletePromises);

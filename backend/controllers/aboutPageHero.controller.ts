@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { AboutPageHeroModel } from "../models/aboutPageHero.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getAboutPageHero = async (
   req: Request,
@@ -89,9 +89,12 @@ export const createOrUpdateAboutPageHero = async (
       throw new AppError("Background image is required", 400);
     }
 
-    // Get relative path for storage
-    const relativePath = getRelativePath(file.path);
-    const imagePath = `/uploads/${relativePath}`;
+    // Upload to Cloudinary
+    const imageUrl = await processFileUpload(file, "about-page-hero", "background");
+
+    if (!imageUrl) {
+      throw new AppError("Failed to upload image", 500);
+    }
 
     // Check if hero already exists (singleton pattern)
     const existingHero = await AboutPageHeroModel.findOne();
@@ -99,16 +102,15 @@ export const createOrUpdateAboutPageHero = async (
     if (existingHero) {
       // Delete old image if it exists
       if (existingHero.backgroundImage) {
-        const oldImagePath = existingHero.backgroundImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldImagePath);
+          await deleteFile(existingHero.backgroundImage);
         } catch (error) {
           console.error("Error deleting old image:", error);
         }
       }
 
       // Update existing hero
-      existingHero.backgroundImage = imagePath;
+      existingHero.backgroundImage = imageUrl;
       existingHero.title = title;
       if (isActive !== undefined) {
         existingHero.isActive = isActive === "true" || isActive === true;
@@ -124,7 +126,7 @@ export const createOrUpdateAboutPageHero = async (
     } else {
       // Create new hero
       const hero = await AboutPageHeroModel.create({
-        backgroundImage: imagePath,
+        backgroundImage: imageUrl,
         title,
         isActive: isActive === "true" || isActive === true || isActive === undefined,
       });
@@ -159,16 +161,19 @@ export const updateAboutPageHero = async (
     // If new image is uploaded, delete old one
     if (file) {
       if (hero.backgroundImage) {
-        const oldImagePath = hero.backgroundImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldImagePath);
+          await deleteFile(hero.backgroundImage);
         } catch (error) {
           console.error("Error deleting old image:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      hero.backgroundImage = `/uploads/${relativePath}`;
+      // Upload to Cloudinary
+      const imageUrl = await processFileUpload(file, "about-page-hero", "background");
+      if (!imageUrl) {
+        throw new AppError("Failed to upload image", 500);
+      }
+      hero.backgroundImage = imageUrl;
     }
 
     // Update other fields if provided
@@ -232,9 +237,8 @@ export const deleteAboutPageHero = async (
 
     // Delete associated image
     if (hero.backgroundImage) {
-      const imagePath = hero.backgroundImage.replace("/uploads/", "uploads/");
       try {
-        await deleteFile(imagePath);
+        await deleteFile(hero.backgroundImage);
       } catch (error) {
         console.error("Error deleting image:", error);
       }

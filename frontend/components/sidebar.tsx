@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper, Calendar, Megaphone, Footprints } from "lucide-react";
+import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper, Calendar, Megaphone, Footprints, Layers, FileCode } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
@@ -59,6 +59,18 @@ const sidebarItems = [
     title:"Footer",
     href: "/admin/footer",
     icon: Footprints,
+    roles: ["admin"], 
+  },
+  {
+    title:"About Page Hero",
+    href: "/admin/aboutPageHero",
+    icon: Layers,
+    roles: ["admin"], 
+  },
+  {
+    title:"About Page Content",
+    href: "/admin/aboutPageContent",
+    icon: FileCode,
     roles: ["admin"], 
   },
 ];
