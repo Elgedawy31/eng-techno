@@ -207,6 +207,55 @@ export const uploadAboutPageHero = multer({
   },
 });
 
+const aboutPageContentStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const aboutPageContentPath = ensureUploadsDir("about-page-content");
+    cb(null, aboutPageContentPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    if (file.fieldname === "logoImage") {
+      cb(null, `about-page-logo-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "backgroundImage") {
+      cb(null, `about-page-bg-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "companyProfileFile") {
+      cb(null, `company-profile-${uniqueSuffix}${ext}`);
+    } else {
+      cb(null, `about-page-${uniqueSuffix}${ext}`);
+    }
+  },
+});
+
+// Combined filter for images and PDFs
+const imageAndPdfFilter = (
+  req: Express.Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  const allowedMimes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "application/pdf",
+  ];
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("File type not supported. Please use JPEG, PNG, WebP, or PDF"));
+  }
+};
+
+export const uploadAboutPageContent = multer({
+  storage: aboutPageContentStorage,
+  fileFilter: imageAndPdfFilter,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB max file size
+    files: 3, // backgroundImage + logoImage + companyProfileFile
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;

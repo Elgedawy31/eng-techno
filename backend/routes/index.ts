@@ -9,6 +9,7 @@ import { router as eventRouter } from "./event.route";
 import { router as announcementRouter } from "./announcement.route";
 import { router as footerRouter } from "./footer.route";
 import { router as aboutPageHeroRouter } from "./aboutPageHero.route";
+import { router as aboutPageContentRouter } from "./aboutPageContent.route";
 
 export const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/events", eventRouter);
 router.use("/announcements", announcementRouter);
 router.use("/footer", footerRouter);
 router.use("/about-page-hero", aboutPageHeroRouter);
+router.use("/about-page-content", aboutPageContentRouter);
 
 
