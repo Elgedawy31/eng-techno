@@ -7,6 +7,6 @@ export const notFoundHandler = (
 ) => {
   res.status(404).json({
     success: false,
-    message: "الصفحة المطلوبة غير موجودة",
+    message: "Page not found",
   });
 };

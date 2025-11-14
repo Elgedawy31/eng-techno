@@ -9,44 +9,7 @@ import {
   getAccessTokenCookieOptions,
 } from "../utils/cookies";
 
-interface AuthenticatedUser {
-  _id: string;
-  email: string;
-  role: string;
-}
 
-
-export const handleGoogleCallback = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const user = req.user as AuthenticatedUser;
-    if (!user) {
-      throw new AppError("Authentication failed", 401);
-    }
-
-    const accessToken = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      env.jwtSecret,
-      { expiresIn: "15m" }
-    );
-
-    const accessTokenCookieOptions = getAccessTokenCookieOptions();
-
-    res.cookie("accessToken", accessToken, accessTokenCookieOptions);
-
-    const redirectUrl =
-      user.role === "admin"
-        ? `${env.frontendUrl}/dashboard`
-        : env.frontendUrl;
-
-    res.redirect(redirectUrl);
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const login = async (
   req: Request,

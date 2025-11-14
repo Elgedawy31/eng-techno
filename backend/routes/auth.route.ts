@@ -1,7 +1,5 @@
 import { Router } from "express";
-import passport from "passport";
 import {
-  handleGoogleCallback,
   logout,
   login,
   checkAuth,
@@ -10,24 +8,7 @@ import {
 
 export const router = Router();
 
-import "../config/passport";
 
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    accessType: "offline",
-    prompt: "consent",
-  })
-);
-
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  handleGoogleCallback
-);
-
-// Login route (email/password)
 router.post("/login", login);
 
 // Check authentication status

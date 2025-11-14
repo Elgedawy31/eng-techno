@@ -16,7 +16,6 @@ export const authenticate = async (
   next: NextFunction
 ) => {
   try {
-    // Try to get token from cookies first, then from Authorization header
     const accessToken =
       req.cookies?.accessToken ||
       req.headers.authorization?.replace("Bearer ", "");
@@ -66,7 +65,7 @@ export const authorize = (...roles: string[]) => {
 
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError("ليس لديك صلاحية لتنفيذ هذا الإجراء", 403)
+        new AppError("You do not have permission to perform this action", 403)
       );
     }
 
