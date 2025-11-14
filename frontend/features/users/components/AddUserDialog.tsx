@@ -233,7 +233,7 @@ export function AddUserDialog({ open, onOpenChange, user }: UserDialogProps) {
             <Controller
               name="role"
               control={control}
-              render={({ field }: { field: { value: string; onChange: (value: string) => void } }) => (
+              render={({ field }) => (
                 <Select
                   value={field.value || "admin"}
                   onValueChange={(value) => field.onChange(value as UserRole)}

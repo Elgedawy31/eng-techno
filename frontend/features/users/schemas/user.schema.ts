@@ -17,7 +17,7 @@ export const createUserSchema = z.object({
     .optional(),
   role: z
     .enum(["admin"], {
-      errorMap: () => ({ message: "Invalid role" }),
+      message: "Invalid role",
     })
     .default("admin"),
 });
@@ -51,7 +51,7 @@ export const updateUserSchema = z.object({
     .optional(),
   role: z
     .enum(["admin"], {
-      errorMap: () => ({ message: "Invalid role" }),
+      message: "Invalid role",
     })
     .optional(),
 });
