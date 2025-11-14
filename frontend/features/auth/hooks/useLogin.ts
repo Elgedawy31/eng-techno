@@ -33,7 +33,7 @@ export function useLogin(): UseLoginReturn {
       }
 
       // Use window.location for full page redirect to ensure middleware sees the cookie
-      window.location.href = "/dashboard";
+      window.location.href = "/admin";
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);

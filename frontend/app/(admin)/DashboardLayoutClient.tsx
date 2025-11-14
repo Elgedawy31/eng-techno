@@ -15,14 +15,14 @@ export default function DashboardLayoutClient({
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const userRole = user?.role || "sales";
-  const isLoginPage = pathname === "/dashboard/login";
+  const isLoginPage = pathname === "/admin/login";
 
-  const restrictedRoutes = useMemo(() => ["/dashboard/banners", "/dashboard/users"], []);
+  const restrictedRoutes = useMemo(() => ["/admin/banners", "/admin/users"], []);
 
   useEffect(() => {
     if (!isLoginPage && restrictedRoutes.includes(pathname)) {
       if (userRole === "sales") {
-        router.replace("/dashboard");
+        router.replace("/admin");
       }
     }
   }, [pathname, userRole, isLoginPage, router , restrictedRoutes]);

@@ -12,17 +12,17 @@ export default function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value || request.cookies.get("accessToken")?.value;
 
   // السماح لصفحة login
-  if (pathname === "/dashboard/login") {
+  if (pathname === "/admin/login") {
     if (token) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
     return NextResponse.next();
   }
 
-  // حماية باقي صفحات dashboard
-  if (pathname.startsWith("/dashboard")) {
+  // حماية باقي صفحات admin
+  if (pathname.startsWith("/admin")) {
     if (!token) {
-      return NextResponse.redirect(new URL("/dashboard/login", request.url));
+      return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }
 
@@ -30,7 +30,7 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/admin/:path*"],
 };
 
 

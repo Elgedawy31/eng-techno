@@ -31,14 +31,14 @@ export function useLogout(): UseLogoutReturn {
       clearAuth();
 
       // Use router.replace for client-side navigation without page refresh
-      router.replace("/dashboard/login");
+      router.replace("/admin/login");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during logout";
       setError(errorMessage);
       
       // Even if there's an error, clear the store and redirect
       clearAuth();
-      router.replace("/dashboard/login");
+      router.replace("/admin/login");
     } finally {
       setLoading(false);
     }

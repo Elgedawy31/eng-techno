@@ -9,7 +9,7 @@ import { useAuthStore } from "@/features/auth/stores/authStore";
 const sidebarItems = [
   {
     title:"Users",
-    href: "/dashboard",
+    href: "/admin",
     icon: UsersIcon,
     roles: ["admin"], 
   },
@@ -29,8 +29,8 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r border-border bg-sidebar">
       <div className="flex-1 space-y-2 p-4">
         {filteredItems.map((item) => {
-          const isActive = item.href === "/dashboard"
-            ? pathname === "/dashboard" || pathname === "/dashboard/"
+          const isActive = item.href === "/admin"
+            ? pathname === "/admin" || pathname === "/admin/"
             : pathname === item.href || pathname.startsWith(item.href + "/");
           const Icon = item.icon;
           return (

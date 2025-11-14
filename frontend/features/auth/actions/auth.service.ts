@@ -115,7 +115,7 @@ export async function loginUser(credentials: { email: string; password: string }
     const res = await authAction(credentials, "/auth/login");
     const accessToken = res?.data?.accessToken;
     if (accessToken) {
-      revalidatePath("/dashboard", "layout");
+      revalidatePath("/admin", "layout");
       return {
         success: true,
         message: res.message || "Login successful!",
@@ -149,7 +149,7 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
     (await cookies()).delete("accessToken");
     
     // Revalidate the dashboard path
-    revalidatePath("/dashboard", "layout");
+    revalidatePath("/admin", "layout");
     
     return {
       success: true,
@@ -159,7 +159,7 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
     // Even if the server call fails, clear the local cookie
     (await cookies()).delete("token");
     (await cookies()).delete("accessToken");
-    revalidatePath("/dashboard", "layout");
+    revalidatePath("/admin", "layout");
     
     const err = error as AxiosError<{ message?: string }>;
     const message =
