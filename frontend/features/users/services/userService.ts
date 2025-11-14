@@ -2,23 +2,16 @@
 import clientAxios from "@/lib/axios/clientAxios";
 import type {
   ApiResponse,
-  PaginatedData,
   Pagination,
 } from "@/types/api.types";
 
-export type UserRole = "admin" | "sales";
-export type Branch = "riyadh" | "jeddah" | "dammam";
+export type UserRole = "admin";
 
 export interface User {
   _id: string;
   name: string;
   email: string;
   role: UserRole;
-  rating?: number;
-  image?: string;
-  whatsNumber?: string;
-  phoneNumber?: string;
-  branch?: Branch;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,11 +23,6 @@ export interface CreateUserPayload {
   email: string;
   password?: string;
   role?: UserRole;
-  rating?: number;
-  image?: File;
-  whatsNumber?: string;
-  phoneNumber?: string;
-  branch?: Branch;
 }
 
 export interface UpdateUserPayload {
@@ -42,11 +30,6 @@ export interface UpdateUserPayload {
   email?: string;
   password?: string;
   role?: UserRole;
-  rating?: number;
-  image?: File;
-  whatsNumber?: string;
-  phoneNumber?: string;
-  branch?: Branch;
 }
 
 export interface CreateUserData {
@@ -89,24 +72,13 @@ class UserService {
 
   async createUser(payload: CreateUserPayload): Promise<CreateUserResponse> {
     try {
-      const formData = new FormData();
-      formData.append("name", payload.name);
-      formData.append("email", payload.email);
-      if (payload.password) formData.append("password", payload.password);
-      if (payload.role) formData.append("role", payload.role);
-      if (payload.rating !== undefined) formData.append("rating", payload.rating.toString());
-      if (payload.whatsNumber) formData.append("whatsNumber", payload.whatsNumber);
-      if (payload.phoneNumber) formData.append("phoneNumber", payload.phoneNumber);
-      if (payload.branch) formData.append("branch", payload.branch);
-      if (payload.image) formData.append("image", payload.image);
-
       const response = await clientAxios.post<CreateUserResponse>(
         "/users",
-        formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          name: payload.name,
+          email: payload.email,
+          password: payload.password,
+          role: payload.role,
         }
       );
       return response.data;
@@ -120,24 +92,13 @@ class UserService {
     payload: UpdateUserPayload
   ): Promise<UpdateUserResponse> {
     try {
-      const formData = new FormData();
-      if (payload.name) formData.append("name", payload.name);
-      if (payload.email) formData.append("email", payload.email);
-      if (payload.password) formData.append("password", payload.password);
-      if (payload.role) formData.append("role", payload.role);
-      if (payload.rating !== undefined) formData.append("rating", payload.rating.toString());
-      if (payload.whatsNumber) formData.append("whatsNumber", payload.whatsNumber);
-      if (payload.phoneNumber) formData.append("phoneNumber", payload.phoneNumber);
-      if (payload.branch) formData.append("branch", payload.branch);
-      if (payload.image) formData.append("image", payload.image);
-
       const response = await clientAxios.put<UpdateUserResponse>(
         `/users/${id}`,
-        formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          name: payload.name,
+          email: payload.email,
+          password: payload.password,
+          role: payload.role,
         }
       );
       return response.data;

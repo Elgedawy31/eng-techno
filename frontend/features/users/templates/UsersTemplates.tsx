@@ -8,7 +8,7 @@ import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useUsers } from "../hooks/useUsers";
 import { useDeleteUser } from "../hooks/useDeleteUser";
-import type { User, UserRole, Branch } from "../services/userService";
+import type { User, UserRole } from "../services/userService";
 import { getErrorMessage } from "@/utils/api.utils";
 import { ColumnDef } from "@tanstack/react-table";
 import UniTable, { type Action } from "@/components/shared/UniTable";
@@ -20,27 +20,12 @@ import { AlertCircle, UserIcon, Plus } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { AddUserDialog } from "../components/AddUserDialog";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 
-dayjs.locale("ar");
-
-// Translate role to Arabic
 const getRoleLabel = (role: UserRole): string => {
   const roleMap: Record<UserRole, string> = {
     admin: "Admin",
-    sales: "مندوب مبيعات",
   };
   return roleMap[role] || role;
-};
-
-// Translate branch to Arabic
-const getBranchLabel = (branch: Branch): string => {
-  const branchMap: Record<Branch, string> = {
-    riyadh: "الرياض",
-    jeddah: "جدة",
-    dammam: "الدمام",
-  };
-  return branchMap[branch] || branch;
 };
 
 function UsersTemplates() {
@@ -53,51 +38,26 @@ function UsersTemplates() {
 
   const columns: ColumnDef<User>[] = [
     {
-      accessorKey: "image",
-      header: "الصورة",
-      cell: ({ row }) => {
-        const user = row.original;
-        const imageUrl = user.image || null;
-        return (
-          <div className="relative w-12 h-12 rounded-full overflow-hidden">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={user.name}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <UserIcon className="w-6 h-6 text-muted-foreground" />
-              </div>
-            )}
-          </div>
-        );
-      },
-    },
-    {
       accessorKey: "name",
-      header: "الاسم",
+      header: "Name",
       cell: ({ row }) => {
         return <div className="font-medium">{row.getValue("name")}</div>;
       },
     },
     {
       accessorKey: "email",
-      header: "البريد الإلكتروني",
+      header: "Email",
       cell: ({ row }) => {
         return <div className="text-muted-foreground">{row.getValue("email")}</div>;
       },
     },
     {
       accessorKey: "role",
-      header: "الدور",
+      header: "Role",
       cell: ({ row }) => {
         const role = row.getValue("role") as UserRole;
         const roleVariants: Record<UserRole, "default" | "secondary" | "destructive" | "outline"> = {
           admin: "destructive",
-          sales: "secondary",
         };
         const variant = roleVariants[role] || "default";
         return (
@@ -108,52 +68,8 @@ function UsersTemplates() {
       },
     },
     {
-      accessorKey: "rating",
-      header: "التقييم",
-      cell: ({ row }) => {
-        const rating = row.getValue("rating") as number | undefined;
-        if (rating === undefined) return <div className="text-muted-foreground">-</div>;
-        return (
-          <div className="flex items-center gap-1">
-            <span className="text-sm font-medium">{rating}</span>
-            <span className="text-yellow-500">★</span>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "whatsNumber",
-      header: "رقم الواتساب",
-      cell: ({ row }) => {
-        const whatsNumber = row.getValue("whatsNumber") as string | undefined;
-        return <div className="text-muted-foreground">{whatsNumber || "-"}</div>;
-      },
-    },
-    {
-      accessorKey: "phoneNumber",
-      header: "رقم الهاتف",
-      cell: ({ row }) => {
-        const phoneNumber = row.getValue("phoneNumber") as string | undefined;
-        return <div className="text-muted-foreground">{phoneNumber || "-"}</div>;
-      },
-    },
-    {
-      accessorKey: "branch",
-      header: "الفرع",
-      cell: ({ row }) => {
-        const branch = row.getValue("branch") as Branch | undefined;
-        if (!branch) return <div className="text-muted-foreground">-</div>;
-        const branchVarient = branch === "riyadh" ? "default" : branch === "jeddah" ? "secondary" : "destructive";
-        return (
-          <Badge variant={branchVarient}>
-            {getBranchLabel(branch)}
-          </Badge>
-        );
-      },
-    },
-    {
       accessorKey: "createdAt",
-      header: "تاريخ الإنشاء",
+      header: "Creation date",
       cell: ({ row }) => {
         const date = row.getValue("createdAt") as string;
         return (
@@ -186,11 +102,11 @@ function UsersTemplates() {
   return (
     <section className="space-y-6">
       <PageHeader
-        title="المستخدمين"
-        description="يمكنك إدارة جميع المستخدمين من هنا."
+        title="Users"
+        description="You can manage all users here."
         actions={[
           {
-            label: "إضافة مستخدم جديد",
+            label: "Add new user",
             icon: Plus,
             onClick: () => setIsDialogOpen(true),
             variant: "default",
@@ -212,16 +128,16 @@ function UsersTemplates() {
       <ConfirmationModal
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
-        title="تأكيد الحذف"
+        title="Confirm deletion"
         description={
           deletingUser
-            ? `هل أنت متأكد من حذف المستخدم "${deletingUser.name}"؟ لا يمكن التراجع عن هذا الإجراء.`
-            : "هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء."
+            ? `Are you sure you want to delete   "${deletingUser.name}"? This action cannot be undone.`
+            : "Are you sure you want to delete this user? This action cannot be undone."
         }
-        confirmText="حذف"
-        cancelText="إلغاء"
+        confirmText="Delete"
+        cancelText="Cancel"
         variant="destructive"
-        itemType="حذف"
+        itemType="Delete"
         itemName={deletingUser?.name}
         onConfirm={async () => {
           if (deletingUser) {
@@ -241,8 +157,8 @@ function UsersTemplates() {
           <CardContent className="pt-6">
             <NoDataMsg
               icon={AlertCircle}
-              title="حدث خطأ"
-              description={getErrorMessage(error) || "حدث خطأ أثناء جلب البيانات"}
+              title="An error occurred"
+              description={getErrorMessage(error) || "An error occurred while fetching the data"}
               iconBgColor="bg-destructive/10"
               iconColor="text-destructive"
             />
@@ -257,8 +173,8 @@ function UsersTemplates() {
               <CardContent className="pt-6">
                 <NoDataMsg
                   icon={UserIcon}
-                  title="لا يوجد مستخدمين متاحين"
-                  description="لم يتم إضافة أي مستخدمين حتى الآن"
+                  title="No users available"
+                  description="No users have been added yet"
                 />
               </CardContent>
             </Card>
@@ -268,7 +184,7 @@ function UsersTemplates() {
               columns={columns}
               data={users}
               actions={actions}
-              tableName="مستخدم"
+              tableName="User"
               isLoading={isLoading}
               totalItems={users.length}
               itemsPerPage={users.length || 10}
