@@ -1,5 +1,3 @@
-import PresenceImage from '@/assets/presence.png'
-import PresenceImage2 from '@/assets/presence2.png'
 import CoreCard from './CoreCard'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
@@ -39,7 +37,7 @@ export default function CoreValues() {
           <div className="bg-black text-center w-1/5">
             <h1 className='my-14 text-3xl text-primary'>GLOBAL PRESENCE</h1>
             <div className="w-full h-[603px] relative">
-            <Image src={PresenceImage} alt='pres' fill/>
+            <Image src='/presence.png' alt='pres' fill/>
             </div>
           </div>
           <div className=" mt-auto">
@@ -47,7 +45,7 @@ export default function CoreValues() {
             strokeWidth={1} size={250}/>
           </div>
           <div className="flex-1 h-full relative">
-            <Image src={PresenceImage2} alt='pres2' fill/>
+            <Image src='/presence2.png' alt='pres2' fill/>
           </div>
         </div>
     </div>
