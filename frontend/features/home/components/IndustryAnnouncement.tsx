@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useAnnouncement } from '@/features/announcement/hooks/useAnnouncement'
 import { formatTextWithNewlines } from '@/utils/text.utils'
+import { Fade } from 'react-awesome-reveal'
 
 export default function IndustryAnnouncement() {
   const { announcements } = useAnnouncement()
@@ -21,24 +22,40 @@ export default function IndustryAnnouncement() {
 
   return (
     <div className="mt-12">
-      <div className="flex gap-4 items-center mb-12">
-        <Image src={eventLogoImage} alt='def' width={182} height={182}/>
-        <div className="">
-          <h1 className='text-3xl mb-2'>{title}</h1>
-          <h1 className='text-8xl leading-[100%]'>{tagline}</h1>
+      <Fade direction="up" duration={800} triggerOnce>
+        <div className="flex gap-6 items-center mb-12">
+          <div className="relative shrink-0">
+            <Image 
+              src={eventLogoImage} 
+              alt='def' 
+              width={182} 
+              height={182}
+              className="object-contain"
+            />
+          </div>
+          <div className="space-y-2">
+            <h1 className='text-3xl font-bold text-foreground'>{title}</h1>
+            <h1 className='text-8xl leading-[100%] font-bold text-foreground'>{tagline}</h1>
+          </div>
         </div>
-      </div>
-      <p className='text-4xl font-medium w-3/4 mb-8'>
-        {description}
-      </p>
-      <p className='text-brand text-3xl w-66 font-bold underline'>
-        {boothInfoLines.map((line, index) => (
-          <span key={index}>
-            {line}
-            {index < boothInfoLines.length - 1 && " "}
-          </span>
-        ))}
-      </p>
+      </Fade>
+      
+      <Fade direction="up" duration={800} delay={200} triggerOnce>
+        <p className='text-4xl font-medium w-3/4 mb-8 leading-relaxed text-foreground'>
+          {description}
+        </p>
+      </Fade>
+      
+      <Fade direction="up" duration={800} delay={400} triggerOnce>
+        <p className='text-brand text-3xl font-bold underline leading-tight'>
+          {boothInfoLines.map((line, index) => (
+            <span key={index}>
+              {line}
+              {index < boothInfoLines.length - 1 && " "}
+            </span>
+          ))}
+        </p>
+      </Fade>
     </div>
   )
 }

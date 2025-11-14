@@ -4,7 +4,6 @@ import News from './News'
 import IndustryEvents from './IndustryEvents'
 import IndustryAnnouncement from './IndustryAnnouncement'
 import { useEvent } from '@/features/event/hooks/useEvent'
-import { Fade } from "react-awesome-reveal";
 
 export default function Industry() {
   const { events } = useEvent()
@@ -16,7 +15,6 @@ export default function Industry() {
     .slice(0, 3) || []
 
   return (
-    <Fade duration={800} triggerOnce>
       <div className="border-x border-[#D1D3D4] pl-30 bg-[#F1F2F2]"
       >
       <div 
@@ -42,6 +40,5 @@ export default function Industry() {
         <IndustryAnnouncement />
         </div>
       </div>
-    </Fade>
   )
 }
