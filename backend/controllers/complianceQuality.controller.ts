@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ComplianceQualityModel } from "../models/complianceQuality.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getComplianceQuality = async (
   req: Request,
@@ -94,24 +94,35 @@ export const createOrUpdateComplianceQuality = async (
       );
     }
 
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     let logoPath: string | undefined;
     let displayPath: string | undefined;
     let profilePath: string | undefined;
 
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "logoImage") {
-          logoPath = filePath;
-        } else if (file.fieldname === "displayImage") {
-          displayPath = filePath;
-        } else if (file.fieldname === "companyProfileFile") {
-          profilePath = filePath;
+    if (files) {
+      // Handle logoImage
+      if (files.logoImage && files.logoImage[0]) {
+        const imageUrl = await processFileUpload(files.logoImage[0], "compliance-quality", "logo");
+        if (imageUrl) {
+          logoPath = imageUrl;
         }
-      });
+      }
+
+      // Handle displayImage
+      if (files.displayImage && files.displayImage[0]) {
+        const imageUrl = await processFileUpload(files.displayImage[0], "compliance-quality", "display");
+        if (imageUrl) {
+          displayPath = imageUrl;
+        }
+      }
+
+      // Handle companyProfileFile (PDF)
+      if (files.companyProfileFile && files.companyProfileFile[0]) {
+        const fileUrl = await processFileUpload(files.companyProfileFile[0], "compliance-quality", "company-profile", "raw");
+        if (fileUrl) {
+          profilePath = fileUrl;
+        }
+      }
     }
 
     // Check if compliance quality already exists (singleton pattern)
@@ -120,16 +131,13 @@ export const createOrUpdateComplianceQuality = async (
     if (existingComplianceQuality) {
       // Delete old files if new ones are uploaded
       if (logoPath && existingComplianceQuality.logoImage) {
-        const oldPath = existingComplianceQuality.logoImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old logo:", err));
+        deleteFile(existingComplianceQuality.logoImage).catch((err) => console.error("Error deleting old logo:", err));
       }
       if (displayPath && existingComplianceQuality.displayImage) {
-        const oldPath = existingComplianceQuality.displayImage.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old display image:", err));
+        deleteFile(existingComplianceQuality.displayImage).catch((err) => console.error("Error deleting old display image:", err));
       }
       if (profilePath && existingComplianceQuality.companyProfileFile) {
-        const oldPath = existingComplianceQuality.companyProfileFile.replace("/uploads/", "uploads/");
-        deleteFile(oldPath).catch((err) => console.error("Error deleting old profile file:", err));
+        deleteFile(existingComplianceQuality.companyProfileFile).catch((err) => console.error("Error deleting old profile file:", err));
       }
 
       // Update existing compliance quality
@@ -192,7 +200,7 @@ export const updateComplianceQuality = async (
       buttonAction,
       isActive,
     } = req.body;
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const complianceQuality = await ComplianceQualityModel.findById(id);
 
@@ -201,31 +209,39 @@ export const updateComplianceQuality = async (
     }
 
     // Handle file uploads
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        const relativePath = getRelativePath(file.path);
-        const filePath = `/uploads/${relativePath}`;
-
-        if (file.fieldname === "logoImage") {
-          if (complianceQuality.logoImage) {
-            const oldPath = complianceQuality.logoImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old logo:", err));
-          }
-          complianceQuality.logoImage = filePath;
-        } else if (file.fieldname === "displayImage") {
-          if (complianceQuality.displayImage) {
-            const oldPath = complianceQuality.displayImage.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old display image:", err));
-          }
-          complianceQuality.displayImage = filePath;
-        } else if (file.fieldname === "companyProfileFile") {
-          if (complianceQuality.companyProfileFile) {
-            const oldPath = complianceQuality.companyProfileFile.replace("/uploads/", "uploads/");
-            deleteFile(oldPath).catch((err) => console.error("Error deleting old profile file:", err));
-          }
-          complianceQuality.companyProfileFile = filePath;
+    if (files) {
+      // Handle logoImage
+      if (files.logoImage && files.logoImage[0]) {
+        if (complianceQuality.logoImage) {
+          deleteFile(complianceQuality.logoImage).catch((err) => console.error("Error deleting old logo:", err));
         }
-      });
+        const imageUrl = await processFileUpload(files.logoImage[0], "compliance-quality", "logo");
+        if (imageUrl) {
+          complianceQuality.logoImage = imageUrl;
+        }
+      }
+
+      // Handle displayImage
+      if (files.displayImage && files.displayImage[0]) {
+        if (complianceQuality.displayImage) {
+          deleteFile(complianceQuality.displayImage).catch((err) => console.error("Error deleting old display image:", err));
+        }
+        const imageUrl = await processFileUpload(files.displayImage[0], "compliance-quality", "display");
+        if (imageUrl) {
+          complianceQuality.displayImage = imageUrl;
+        }
+      }
+
+      // Handle companyProfileFile (PDF)
+      if (files.companyProfileFile && files.companyProfileFile[0]) {
+        if (complianceQuality.companyProfileFile) {
+          deleteFile(complianceQuality.companyProfileFile).catch((err) => console.error("Error deleting old profile file:", err));
+        }
+        const fileUrl = await processFileUpload(files.companyProfileFile[0], "compliance-quality", "company-profile", "raw");
+        if (fileUrl) {
+          complianceQuality.companyProfileFile = fileUrl;
+        }
+      }
     }
 
     // Update other fields if provided
@@ -295,18 +311,15 @@ export const deleteComplianceQuality = async (
     const deletePromises: Promise<void>[] = [];
 
     if (complianceQuality.logoImage) {
-      const path = complianceQuality.logoImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting logo:", err)));
+      deletePromises.push(deleteFile(complianceQuality.logoImage).catch((err) => console.error("Error deleting logo:", err)));
     }
 
     if (complianceQuality.displayImage) {
-      const path = complianceQuality.displayImage.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting display image:", err)));
+      deletePromises.push(deleteFile(complianceQuality.displayImage).catch((err) => console.error("Error deleting display image:", err)));
     }
 
     if (complianceQuality.companyProfileFile) {
-      const path = complianceQuality.companyProfileFile.replace("/uploads/", "uploads/");
-      deletePromises.push(deleteFile(path).catch((err) => console.error("Error deleting profile file:", err)));
+      deletePromises.push(deleteFile(complianceQuality.companyProfileFile).catch((err) => console.error("Error deleting profile file:", err)));
     }
 
     await Promise.all(deletePromises);
