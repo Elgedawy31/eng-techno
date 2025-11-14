@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { SearchModel } from "../models/search.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getSearch = async (
   req: Request,
@@ -94,11 +94,14 @@ export const createOrUpdateSearch = async (
     }
 
     const file = req.file;
-    let logoPath: string | undefined;
+    let logoUrl: string | undefined;
 
     if (file) {
-      const relativePath = getRelativePath(file.path);
-      logoPath = `/uploads/${relativePath}`;
+      // Upload logo to Cloudinary
+      logoUrl = await processFileUpload(file, "search", "logo");
+      if (!logoUrl) {
+        throw new AppError("Failed to upload logo", 500);
+      }
     }
 
     // Check if search already exists (singleton pattern)
@@ -107,9 +110,8 @@ export const createOrUpdateSearch = async (
     if (existingSearch) {
       // Delete old logo if new one is uploaded
       if (file && existingSearch.logoImage) {
-        const oldLogoPath = existingSearch.logoImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldLogoPath);
+          await deleteFile(existingSearch.logoImage);
         } catch (error) {
           console.error("Error deleting old logo:", error);
         }
@@ -120,7 +122,7 @@ export const createOrUpdateSearch = async (
       existingSearch.subtitle = subtitle;
       existingSearch.placeholder = placeholder;
       existingSearch.buttonText = buttonText;
-      if (logoPath) existingSearch.logoImage = logoPath;
+      if (logoUrl) existingSearch.logoImage = logoUrl;
       if (isActive !== undefined) {
         existingSearch.isActive = isActive === "true" || isActive === true;
       }
@@ -139,7 +141,7 @@ export const createOrUpdateSearch = async (
         subtitle,
         placeholder,
         buttonText,
-        logoImage: logoPath,
+        logoImage: logoUrl,
         isActive: isActive === "true" || isActive === true || isActive === undefined,
       });
 
@@ -179,16 +181,19 @@ export const updateSearch = async (
     // If new logo is uploaded, delete old one
     if (file) {
       if (search.logoImage) {
-        const oldLogoPath = search.logoImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldLogoPath);
+          await deleteFile(search.logoImage);
         } catch (error) {
           console.error("Error deleting old logo:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      search.logoImage = `/uploads/${relativePath}`;
+      // Upload logo to Cloudinary
+      const logoUrl = await processFileUpload(file, "search", "logo");
+      if (!logoUrl) {
+        throw new AppError("Failed to upload logo", 500);
+      }
+      search.logoImage = logoUrl;
     }
 
     // Update other fields if provided
@@ -255,9 +260,8 @@ export const deleteSearch = async (
 
     // Delete associated logo
     if (search.logoImage) {
-      const logoPath = search.logoImage.replace("/uploads/", "uploads/");
       try {
-        await deleteFile(logoPath);
+        await deleteFile(search.logoImage);
       } catch (error) {
         console.error("Error deleting logo:", error);
       }
