@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 
 export default function About() {
+  
   return (
     <div className='bg-black h-[70vh] py-20 px-12'>
       <div className='w-full mx-auto border border-white'></div>

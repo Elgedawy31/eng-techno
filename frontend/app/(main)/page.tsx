@@ -5,5 +5,5 @@ export default async function Home() {
   // Fetch hero data on the server
   const hero = await fetchHero();
 
-  return <HomeTemplate hero={hero} />;
+  return <HomeTemplate hero={hero ?? null} />;
 }
