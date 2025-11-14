@@ -13,7 +13,6 @@ import { uploadAnnouncement } from "../utils/upload";
 
 export const router = Router();
 
-// Public route - Get active announcements
 router.get("/", getAnnouncements);
 
 // Admin routes - require authentication and admin role

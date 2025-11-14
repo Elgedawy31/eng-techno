@@ -5,7 +5,6 @@ import { useMediaCentres } from '@/features/mediaCentre/hooks/useMediaCentres'
 export default function IndustryEvents() {
   const { mediaCentres } = useMediaCentres()
   
-  // Get the first media centre section (or use fallback)
   const mediaCentre = mediaCentres?.[0] || null
   const mainTitle = mediaCentre?.mainTitle || "INDUSTRY EVENTS"
   const mainDescription = mediaCentre?.mainDescription || 

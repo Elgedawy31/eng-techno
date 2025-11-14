@@ -19,12 +19,10 @@ export function useAnnouncement() {
   } = useQuery({
     queryKey: ["announcement"],
     queryFn: async ({ signal }) => {
-      // Cancel previous request if exists
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
 
-      // Create new AbortController for this request
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
 
