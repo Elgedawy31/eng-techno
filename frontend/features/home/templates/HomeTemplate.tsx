@@ -5,13 +5,15 @@ import Industry from "../components/Industry";
 import Navbar from "../components/Navbar";
 import SearchSection from "../components/SearchSection";
 import type { Hero } from "@/features/hero/services/heroService";
+import type { About as AboutType } from "@/features/about/services/aboutService";
 import { formatTextWithNewlines } from "@/utils/text.utils";
 
 interface HomeTemplateProps {
   hero: Hero | null;
+  about: AboutType | null;
 }
 
-function HomeTemplate({ hero }: HomeTemplateProps) {
+function HomeTemplate({ hero, about }: HomeTemplateProps) {
   const backgroundImage = hero?.backgroundImage || "/hero-bg.png";
   
   const processedHero = hero
@@ -33,7 +35,7 @@ function HomeTemplate({ hero }: HomeTemplateProps) {
           <HeroSection hero={processedHero} isLoading={false} />
         </div>
       </div>
-      <About />
+      <About about={about} />
       <GroupSection />
       <SearchSection />
       <Industry />
