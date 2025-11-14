@@ -16,13 +16,13 @@ export function CoreProviders({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-    
         {children}
         <Toaster />
     </QueryClientProvider>
   );
 }
 
+// AuthProvider wrapper - used in dashboard (CoreProviders already wraps from root)
 export function Providers({
   children,
   data,
