@@ -78,8 +78,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --brand: oklch(0.828 0.189 84.429);
-  --brand-foreground: oklch(0.145 0 0);
+  --brand: #C3996C;
+  --brand-foreground: #090909;
 }
 
 @layer base {
