@@ -16,7 +16,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://eng-techno.vercel.app/"),
+  metadataBase: new URL("https://eng-techno-2.vercel.app/"),
   title: "Techno International Group | Global Leaders in Defense & Security Solutions",
   description:
     "Techno International Group is a premier provider of defense and security solutions, dedicated to enhancing national security and operational readiness across the globe. Empowering nations with cutting-edge equipment, advanced technology, and trusted expertise.",
@@ -34,20 +34,20 @@ export const metadata: Metadata = {
     "Defense & Security",
     "Military Technology",
   ],
-  authors: [{ name: "Techno International Group", url: "https://eng-techno.vercel.app/" }],
+  authors: [{ name: "Techno International Group", url: "https://eng-techno-2.vercel.app/" }],
   robots: "index, follow",
   alternates: {
-    canonical: "https://eng-techno.vercel.app/",
+    canonical: "https://eng-techno-2.vercel.app/",
     languages: {
-      "en": "https://eng-techno.vercel.app/",
-      "ar": "https://eng-techno.vercel.app/ar",
+      "en": "https://eng-techno-2.vercel.app/",
+      "ar": "https://eng-techno-2.vercel.app/ar",
     },
   },
   openGraph: {
     title: "Techno International Group | Global Leaders in Defense & Security Solutions",
     description:
       "Empowering nations with cutting-edge equipment, advanced technology, and trusted expertise. Premier provider of defense and security solutions with decades of experience and a network of over 4,000 experts.",
-    url: "https://eng-techno.vercel.app/",
+    url: "https://eng-techno-2.vercel.app/",
     type: "website",
     siteName: "Techno International Group",
     images: [
