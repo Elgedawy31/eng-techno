@@ -20,28 +20,27 @@ export const login = async (
     const { email, password } = req.body;
 
     if (!email || !password) {
-      throw new AppError("البريد الإلكتروني وكلمة المرور مطلوبان", 400);
+      throw new AppError("Email and password are required", 400);
     }
 
-    // Find user with password field included
     const user = await UserModel.findOne({ email: email.toLowerCase() }).select(
       "+password"
     );
 
     if (!user) {
-      throw new AppError("بيانات الدخول غير صحيحة", 401);
+      throw new AppError("Invalid login credentials", 401);
     }
 
     // Check if user has a password (for OAuth users who don't have passwords)
     if (!user.password) {
-      throw new AppError("بيانات الدخول غير صحيحة", 401);
+      throw new AppError("Invalid login credentials", 401);
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new AppError("بيانات الدخول غير صحيحة", 401);
+      throw new AppError("Invalid login credentials", 401);
     }
 
     // Generate JWT token
@@ -60,7 +59,7 @@ export const login = async (
 
     sendResponse(res, 200, {
       success: true,
-      message: "تم تسجيل الدخول بنجاح",
+      message: "Logged in successfully",
       data: {
         user: userResponse,
         accessToken: accessToken,
@@ -195,23 +194,23 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 
     req.logout((err: any) => {
       if (err) {
-        return next(new AppError("خطأ في إنهاء الجلسة", 500));
+            return next(new AppError("Error in ending session", 500));
       }
 
       if (req.session) {
         req.session.destroy((err: any) => {
           if (err) {
-            return next(new AppError("خطأ في إنهاء الجلسة", 500));
+            return next(new AppError("Error in ending session", 500));
           }
           sendResponse(res, 200, {
             success: true,
-            message: "تم تسجيل الخروج بنجاح",
+            message: "Logged out successfully",
           });
         });
       } else {
         sendResponse(res, 200, {
           success: true,
-          message: "تم تسجيل الخروج بنجاح",
+          message: "Logged out successfully",
         });
       }
     });
