@@ -307,6 +307,35 @@ export const uploadMissionVision = multer({
   },
 });
 
+const complianceQualityStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const complianceQualityPath = ensureUploadsDir("compliance-quality");
+    cb(null, complianceQualityPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    if (file.fieldname === "logoImage") {
+      cb(null, `compliance-logo-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "displayImage") {
+      cb(null, `compliance-display-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "companyProfileFile") {
+      cb(null, `company-profile-${uniqueSuffix}${ext}`);
+    } else {
+      cb(null, `compliance-quality-${uniqueSuffix}${ext}`);
+    }
+  },
+});
+
+export const uploadComplianceQuality = multer({
+  storage: complianceQualityStorage,
+  fileFilter: imageAndPdfFilter,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB max file size
+    files: 3, // logoImage + displayImage + companyProfileFile
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;

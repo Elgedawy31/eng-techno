@@ -15,6 +15,7 @@ import { router as clientPartnerRouter } from "./clientPartner.route";
 import { router as missionVisionRouter } from "./missionVision.route";
 import { router as coreValuesSectionRouter } from "./coreValuesSection.route";
 import { router as coreValueRouter } from "./coreValue.route";
+import { router as complianceQualityRouter } from "./complianceQuality.route";
 
 export const router = Router();
 
@@ -34,5 +35,6 @@ router.use("/client-partners", clientPartnerRouter);
 router.use("/mission-vision", missionVisionRouter);
 router.use("/core-values-section", coreValuesSectionRouter);
 router.use("/core-values", coreValueRouter);
+router.use("/compliance-quality", complianceQualityRouter);
 
 
