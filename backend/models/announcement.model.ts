@@ -47,7 +47,6 @@ const AnnouncementSchema = new Schema(
   }
 );
 
-// Index for efficient querying by active status
 AnnouncementSchema.index({ isActive: 1 });
 
 export type Announcement = InferSchemaType<typeof AnnouncementSchema> & { _id: unknown };
