@@ -11,9 +11,9 @@ interface NoDataMsgProps {
 
 const NoDataMsg = ({
   icon: Icon = InboxIcon,
-  title = 'لا توجد بيانات',
-  description = 'لا توجد بيانات للعرض في الوقت الحالي',
-  additionalMessage = 'تحقق مرة أخرى لاحقاً للحصول على التحديثات',
+  title = 'No data',
+  description = 'No data to display at the moment',
+  additionalMessage = 'Check again later for updates',
   iconBgColor = 'bg-muted',
   iconColor = 'text-muted-foreground'
 }: NoDataMsgProps) => {

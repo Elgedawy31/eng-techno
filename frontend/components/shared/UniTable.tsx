@@ -59,7 +59,7 @@ const UniTable = <TData extends object>({
   const columnsWithActions = [
     ...(headerActions && headerActions.length > 0 ? [{
       id: 'header-actions',
-      header: 'الإجراءات',
+      header: 'Actions',
       cell: () => (
         <div className="relative flex items-center justify-end gap-2 pr-2">
           {headerActions?.map((action, index) => {
@@ -100,7 +100,7 @@ const UniTable = <TData extends object>({
     // Actions column (only if actions exist and not empty)
     ...(actions && actions.length > 0  ? [{
       id: 'actions',
-      header: 'الإجراءات',
+      header: 'Actions',
       cell: ({ row }: { row: { original: TData } }) => {
         // Apply filterActions if provided, otherwise use original actions
         const filteredActions = filterActions
@@ -187,9 +187,9 @@ const UniTable = <TData extends object>({
     <div className="overflow-visible border-color">
       {hasNoData ? (
         <NoDataMsg
-          title="لا توجد بيانات"
-          description="لا توجد بيانات لعرضها في هذا الجدول"
-          additionalMessage="حاول تغيير المرشحات أو تحقق مرة أخرى لاحقاً"
+          title="No data"
+          description="No data to display in this table"
+          additionalMessage="Try changing the filters or check again later"
         />
       ) : (
         <div className="rounded-lg  overflow-x-auto max-w-full  shadow-sm">
@@ -277,12 +277,12 @@ const UniTable = <TData extends object>({
       {/* Pagination */}
       <div className="py-3 px-3 flex items-center justify-between text-sm text-muted-foreground font-medium flex-wrap gap-y-2">
         <span className="flex items-center gap-1">
-          {data.length} من{" "}
-          {totalItems} {tableName ? tableName : "عنصر"}.
+          {data.length} of{" "}
+          {totalItems} {tableName ? tableName : "item"}.
         </span>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center justify-center text-sm font-medium">
-            صفحة {currentPage || 1} من {Math.ceil(totalItems / itemsPerPage) || 1}
+            Page {currentPage || 1} of {Math.ceil(totalItems / itemsPerPage) || 1}
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -293,7 +293,7 @@ const UniTable = <TData extends object>({
               }}
               disabled={currentPage === 1 || !table.getCanPreviousPage()}
             >
-              <span className="sr-only">الانتقال إلى الصفحة الأولى</span>
+              <span className="sr-only">Go to the first page</span>
               <ChevronsRight className="h-4 w-4" />
             </Button>
             <Button
@@ -304,7 +304,7 @@ const UniTable = <TData extends object>({
               }}
               disabled={currentPage === 1 || !table.getCanPreviousPage()}
             >
-              <span className="sr-only">الانتقال إلى الصفحة السابقة</span>
+              <span className="sr-only">Go to the previous page</span>
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Button
@@ -315,7 +315,7 @@ const UniTable = <TData extends object>({
               }}
               disabled={currentPage === Math.ceil(totalItems / itemsPerPage) || !table.getCanNextPage()}
             >
-              <span className="sr-only">الانتقال إلى الصفحة التالية</span>
+              <span className="sr-only">Go to the next page</span>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button
@@ -326,7 +326,7 @@ const UniTable = <TData extends object>({
               }}
               disabled={currentPage === Math.ceil(totalItems / itemsPerPage) || !table.getCanNextPage()}
             >
-              <span className="sr-only">الانتقال إلى الصفحة الأخيرة</span>
+              <span className="sr-only">Go to the last page</span>
               <ChevronsLeft className="h-4 w-4" />
             </Button>
           </div>
