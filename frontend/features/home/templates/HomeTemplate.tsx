@@ -1,15 +1,16 @@
-"use client";
-
 import About from "../components/About";
 import GroupSection from "../components/GroupSection";
 import HeroSection from "../components/HeroSection";
 import Industry from "../components/Industry";
 import Navbar from "../components/Navbar";
 import SearchSection from "../components/SearchSection";
-import { useHero } from "@/features/hero/hooks/useHero";
+import type { Hero } from "@/features/hero/services/heroService";
 
-function HomeTemplate() {
-  const { hero, isLoading } = useHero();
+interface HomeTemplateProps {
+  hero: Hero | null;
+}
+
+function HomeTemplate({ hero }: HomeTemplateProps) {
   const backgroundImage = hero?.backgroundImage || "/hero-bg.png";
 
   return (
@@ -20,7 +21,7 @@ function HomeTemplate() {
       >
         <div className="w-full h-full bg-black/20">
           <Navbar />
-          <HeroSection hero={hero} isLoading={isLoading} />
+          <HeroSection hero={hero} isLoading={false} />
         </div>
       </div>
       <About />
