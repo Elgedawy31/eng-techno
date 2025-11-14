@@ -16,7 +16,7 @@ export const router = Router();
 router.get("/", getMediaCentre);
 
 // Admin routes - require authentication and admin role
-router.get("/admin", getAllMediaCentres);
+router.get("/admin", authenticate, authorize("admin"), getAllMediaCentres);
 router.get("/admin/:id", authenticate, authorize("admin"), getMediaCentreById);
 router.post("/", authenticate, authorize("admin"), createOrUpdateMediaCentre);
 router.put("/:id", authenticate, authorize("admin"), updateMediaCentre);

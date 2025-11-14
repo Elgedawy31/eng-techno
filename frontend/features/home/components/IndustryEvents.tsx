@@ -1,11 +1,12 @@
 "use client";
 
-import { useMediaCentres } from '@/features/mediaCentre/hooks/useMediaCentres'
+import { useMediaCentre } from "@/features/mediaCentre/hooks/useMediaCentre";
+
 
 export default function IndustryEvents() {
-  const { mediaCentres } = useMediaCentres()
+  const { mediaCentre : mediaCentreData } = useMediaCentre()
   
-  const mediaCentre = mediaCentres?.[0] || null
+  const mediaCentre = mediaCentreData || null
   const mainTitle = mediaCentre?.mainTitle || "INDUSTRY EVENTS"
   const mainDescription = mediaCentre?.mainDescription || 
     "At Techno International Group, we believe that leadership in defense and security extends beyond delivering equipment and expertise — it's about being at the heart of global conversations that shape the future of defense. That's why we actively participate in the world's most influential defense exhibitions and summits, where we"
