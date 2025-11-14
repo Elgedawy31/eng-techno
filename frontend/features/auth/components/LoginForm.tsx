@@ -23,9 +23,9 @@ export default function LoginForm() {
   return (
     <div className="w-full max-w-md space-y-8 rounded-lg border border-border bg-card p-8 shadow-sm">
       <div>
-        <h1 className="text-center text-2xl font-bold">تسجيل الدخول</h1>
+        <h1 className="text-center text-2xl font-bold">Login</h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">
-          سجل الدخول للوصول إلى لوحة التحكم
+          Login to access the dashboard
         </p>
       </div>
 
@@ -37,10 +37,10 @@ export default function LoginForm() {
         )}
 
         <FormField
-          label="البريد الإلكتروني"
+          label="Email"
           name="email"
           type="email"
-          placeholder="أدخل بريدك الإلكتروني"
+          placeholder="Enter your email"
           error={errors.email}
           disabled={loading}
           required
@@ -48,10 +48,10 @@ export default function LoginForm() {
         />
 
         <FormField
-          label="كلمة المرور"
+          label="Password"
           name="password"
           type="password"
-          placeholder="أدخل كلمة المرور"
+          placeholder="Enter your password"
           error={errors.password}
           disabled={loading}
           required
@@ -63,7 +63,7 @@ export default function LoginForm() {
           disabled={loading}
           className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
         >
-          {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
