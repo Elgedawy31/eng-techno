@@ -6,7 +6,7 @@ function loading() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <Spinner className="size-8 text-primary" />
-        <p className="text-sm text-muted-foreground">جاري التحميل...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     </div>
   )

@@ -33,23 +33,23 @@ export default function Error({ error, reset }: ErrorProps) {
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-destructive/10">
             <AlertCircle className="size-8 text-destructive" />
           </div>
-          <CardTitle className="text-2xl">حدث خطأ</CardTitle>
+          <CardTitle className="text-2xl">An error occurred</CardTitle>
           <CardDescription className="text-base">
-            عذراً، حدث خطأ غير متوقع
+            Sorry, an unexpected error occurred
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {error.message && (
             <div className="rounded-lg border border-border bg-muted/50 p-4">
               <p className="text-sm font-medium text-muted-foreground">
-                تفاصيل الخطأ:
+                Error details:
               </p>
               <p className="mt-2 text-sm text-foreground">{error.message}</p>
             </div>
           )}
           {error.digest && (
             <p className="text-xs text-muted-foreground">
-              رمز الخطأ: {error.digest}
+              Error code: {error.digest}
             </p>
           )}
         </CardContent>
@@ -60,7 +60,7 @@ export default function Error({ error, reset }: ErrorProps) {
             variant="default"
           >
             <RefreshCw className="size-4" />
-            إعادة المحاولة
+            Try again
           </Button>
           <Button
             onClick={() => router.push('/')}
@@ -68,7 +68,7 @@ export default function Error({ error, reset }: ErrorProps) {
             variant="outline"
           >
             <Home className="size-4" />
-            العودة للرئيسية
+            Return to home
           </Button>
         </CardFooter>
       </Card>

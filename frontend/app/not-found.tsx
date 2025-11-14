@@ -22,18 +22,18 @@ export default function NotFound() {
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
             <FileQuestion className="size-8 text-muted-foreground" />
           </div>
-          <CardTitle className="text-2xl">404 - الصفحة غير موجودة</CardTitle>
+          <CardTitle className="text-2xl">404 - Page not found</CardTitle>
           <CardDescription className="text-base">
-            عذراً، الصفحة التي تبحث عنها غير موجودة
+            Sorry, the page you are looking for does not exist
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-lg border border-border bg-muted/50 p-4">
             <p className="text-sm font-medium text-muted-foreground">
-              قد تكون الصفحة تم نقلها أو حذفها
+              The page may have been moved or deleted
             </p>
             <p className="mt-2 text-sm text-foreground">
-              يرجى التحقق من الرابط أو العودة للصفحة الرئيسية
+              Please check the link or return to the home page
             </p>
           </div>
         </CardContent>
@@ -44,7 +44,7 @@ export default function NotFound() {
             variant="default"
           >
             <ArrowLeft className="size-4" />
-            العودة للخلف
+            Return to the previous page
           </Button>
           <Button
             onClick={() => router.push('/')}
@@ -52,7 +52,7 @@ export default function NotFound() {
             variant="outline"
           >
             <Home className="size-4" />
-            العودة للرئيسية
+            Return to the home page
           </Button>
         </CardFooter>
       </Card>
