@@ -2,14 +2,28 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
+import { useSearch } from '@/features/search/hooks/useSearch'
+import { formatTextWithNewlines } from '@/utils/text.utils'
 
 export default function SearchSection() {
   const [searchQuery, setSearchQuery] = useState('')
+  const { search, isLoading } = useSearch()
 
   const handleSearch = () => {
     // Handle search functionality here
     console.log('Searching for:', searchQuery)
   }
+
+  // Use search data with fallbacks
+  const title = search?.title || "SEARCH THE TECHNO NETWORK"
+  const subtitle = search?.subtitle || "A global defense and security group shaping tomorrow across land, air, and sea."
+  const placeholder = search?.placeholder || "What are you looking for? Vehicles, UAVs, Maritime Systems, Support…"
+  const buttonText = search?.buttonText || "SEARCH"
+  const logoImage = search?.logoImage || "/search-logo.png"
+
+  // Format subtitle to handle "-" separator
+  const formattedSubtitle = formatTextWithNewlines(subtitle)
+  const subtitleLines = formattedSubtitle.split("\n").filter((line) => line.trim().length > 0)
 
   return (
     <div 
@@ -18,11 +32,18 @@ export default function SearchSection() {
     >
       <div className="flex justify-between">
         <div className="w-1/3 text-white">
-          <h1 className='text-6xl mb-2'>SEARCH THE TECHNO NETWORK</h1>
-          <p className='text-2xl'>A global defense and security group shaping tomorrow across land, air, and sea.</p>
+          <h1 className='text-6xl mb-2'>{title}</h1>
+          <p className='text-2xl'>
+            {subtitleLines.map((line, index) => (
+              <span key={index}>
+                {line}
+                {index < subtitleLines.length - 1 && " "}
+              </span>
+            ))}
+          </p>
         </div>
         <div className="">
-          <Image src='/search-logo.png' alt='logo' width={140} height={141} />
+          <Image src={logoImage} alt='logo' width={140} height={141} />
         </div>
       </div>
       <div className="border-b border-[#58595B] flex items-center justify-between pb-2">
@@ -30,19 +51,21 @@ export default function SearchSection() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="What are you looking for? Vehicles, UAVs, Maritime Systems, Support…"
+          placeholder={placeholder}
           className="text-xl text-white bg-transparent border-none outline-none flex-1 placeholder:text-[#58595B]"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               handleSearch()
             }
           }}
+          disabled={isLoading}
         />
         <button 
           onClick={handleSearch}
           className='border-b border-white text-white text-3xl cursor-pointer hover:opacity-80 transition-opacity'
+          disabled={isLoading}
         >
-          SEARCH
+          {buttonText}
         </button>
       </div>
     </div>
