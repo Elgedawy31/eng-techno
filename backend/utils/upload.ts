@@ -123,6 +123,26 @@ export const uploadService = multer({
   },
 });
 
+const searchStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const searchPath = ensureUploadsDir("search");
+    cb(null, searchPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `search-logo-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadSearch = multer({
+  storage: searchStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size for search logo
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
