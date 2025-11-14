@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper, Calendar, Megaphone, Footprints, Layers, FileCode, Handshake, Target } from "lucide-react";
+import { UsersIcon, ImageIcon, FileText, Briefcase, Search, Newspaper, Calendar, Megaphone, Footprints, Layers, FileCode, Handshake, Target, Sparkles, Star, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
@@ -80,9 +80,27 @@ const sidebarItems = [
     roles: ["admin"], 
   },
   {
+    title:"Client Partners",
+    href: "/admin/clientPartner",
+    icon: Building2,
+    roles: ["admin"], 
+  },
+  {
     title:"Mission & Vision",
     href: "/admin/missionVision",
     icon: Target,
+    roles: ["admin"], 
+  },
+  {
+    title:"Core Values",
+    href: "/admin/coreValue",
+    icon: Sparkles,
+    roles: ["admin"], 
+  },
+  {
+    title:"Core Values Section",
+    href: "/admin/coreValuesSection",
+    icon: Star,
     roles: ["admin"], 
   },
 ];

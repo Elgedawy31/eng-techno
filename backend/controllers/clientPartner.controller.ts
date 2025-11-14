@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ClientPartnerModel } from "../models/clientPartner.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getClientPartners = async (
   req: Request,
@@ -81,8 +81,11 @@ export const createClientPartner = async (
     let emblemPath: string | undefined;
 
     if (file) {
-      const relativePath = getRelativePath(file.path);
-      emblemPath = `/uploads/${relativePath}`;
+      const imageUrl = await processFileUpload(file, "client-partner", "emblem");
+      if (!imageUrl) {
+        throw new AppError("Failed to upload emblem image", 500);
+      }
+      emblemPath = imageUrl;
     }
 
     const clientPartner = await ClientPartnerModel.create({
@@ -122,16 +125,18 @@ export const updateClientPartner = async (
     // If new image is uploaded, delete old one
     if (file) {
       if (clientPartner.emblemImage) {
-        const oldEmblemPath = clientPartner.emblemImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldEmblemPath);
+          await deleteFile(clientPartner.emblemImage);
         } catch (error) {
           console.error("Error deleting old emblem:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      clientPartner.emblemImage = `/uploads/${relativePath}`;
+      const imageUrl = await processFileUpload(file, "client-partner", "emblem");
+      if (!imageUrl) {
+        throw new AppError("Failed to upload emblem image", 500);
+      }
+      clientPartner.emblemImage = imageUrl;
     }
 
     // Update other fields if provided
@@ -197,9 +202,8 @@ export const deleteClientPartner = async (
 
     // Delete associated emblem
     if (clientPartner.emblemImage) {
-      const emblemPath = clientPartner.emblemImage.replace("/uploads/", "uploads/");
       try {
-        await deleteFile(emblemPath);
+        await deleteFile(clientPartner.emblemImage);
       } catch (error) {
         console.error("Error deleting emblem:", error);
       }
