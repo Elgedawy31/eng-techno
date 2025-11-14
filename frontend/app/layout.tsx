@@ -67,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" suppressHydrationWarning dir="rtl">
+    <html lang="ar" suppressHydrationWarning >
       <body
         className={`${cairo.variable} font-sans antialiased`}
       >
