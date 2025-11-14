@@ -13,6 +13,8 @@ import { router as aboutPageContentRouter } from "./aboutPageContent.route";
 import { router as clientsPartnersSectionRouter } from "./clientsPartnersSection.route";
 import { router as clientPartnerRouter } from "./clientPartner.route";
 import { router as missionVisionRouter } from "./missionVision.route";
+import { router as coreValuesSectionRouter } from "./coreValuesSection.route";
+import { router as coreValueRouter } from "./coreValue.route";
 
 export const router = Router();
 
@@ -30,5 +32,7 @@ router.use("/about-page-content", aboutPageContentRouter);
 router.use("/clients-partners-section", clientsPartnersSectionRouter);
 router.use("/client-partners", clientPartnerRouter);
 router.use("/mission-vision", missionVisionRouter);
+router.use("/core-values-section", coreValuesSectionRouter);
+router.use("/core-values", coreValueRouter);
 
 
