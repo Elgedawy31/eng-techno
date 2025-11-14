@@ -2,43 +2,32 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CarIcon, HomeIcon, ImageIcon, UsersIcon } from "lucide-react";
+import {  HomeIcon, UsersIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
 const sidebarItems = [
   {
-    title:"الرئيسية",
+    title:"Home",
     href: "/dashboard",
     icon: HomeIcon,
-    roles: ["admin", "sales"], // All roles can access
+    roles: ["admin"], 
   },
+ 
   {
-    title: "البانرات",
-    href: "/dashboard/banners",
-    icon: ImageIcon,
-    roles: ["admin"], // Only admin
-  },
-  {
-    title: "المستخدمين",
+    title: "Users",
     href: "/dashboard/users",
     icon: UsersIcon,
-    roles: ["admin"], // Only admin
+    roles: ["admin"], 
   },
-  {
-    title: "السيارات",
-    href: "/dashboard/cars",
-    icon: CarIcon,
-    roles: ["admin", "sales"], // All roles can access
-  },
+ 
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
-  const userRole = user?.role || "sales";
+  const userRole = user?.role || "user";
 
-  // Filter sidebar items based on user role
   const filteredItems = sidebarItems.filter((item) => 
     item.roles.includes(userRole)
   );
