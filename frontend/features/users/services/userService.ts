@@ -20,13 +20,10 @@ export interface User {
   phoneNumber?: string;
   branch?: Branch;
   createdAt: string;
+  updatedAt: string;
 }
 
-export interface UsersData extends PaginatedData<User> {
-  users: User[];
-}
-
-export type GetAllUsersResponse = ApiResponse<UsersData, true>;
+export type GetAllUsersResponse = ApiResponse<User[]>;
 
 export interface CreateUserPayload {
   name: string;
@@ -70,29 +67,9 @@ export type DeleteUserResponse = ApiResponse<null>;
 export type GetUserResponse = ApiResponse<GetUserData>;
 
 class UserService {
-  async getAllUsers(
-    page: number = 1,
-    limit: number = 10,
-    search?: string,
-    role?: UserRole,
-    signal?: AbortSignal
-  ): Promise<GetAllUsersResponse> {
+  async getAllUsers(signal?: AbortSignal): Promise<GetAllUsersResponse> {
     try {
-      const params: Record<string, string | number> = {
-        page,
-        limit,
-      };
-
-      if (search && search.trim()) {
-        params.search = search.trim();
-      }
-
-      if (role) {
-        params.role = role;
-      }
-
       const response = await clientAxios.get<GetAllUsersResponse>("/users", {
-        params,
         signal,
       });
       return response.data;

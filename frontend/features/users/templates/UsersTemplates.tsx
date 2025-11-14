@@ -20,8 +20,6 @@ import { AlertCircle, UserIcon, Plus } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { AddUserDialog } from "../components/AddUserDialog";
 import { Badge } from "@/components/ui/badge";
-import { UsersFilter } from "../components/UsersFilter";
-import type { UseUsersFilters } from "../hooks/useUsers";
 import Image from "next/image";
 
 dayjs.locale("ar");
@@ -29,7 +27,7 @@ dayjs.locale("ar");
 // Translate role to Arabic
 const getRoleLabel = (role: UserRole): string => {
   const roleMap: Record<UserRole, string> = {
-    admin: "مدير",
+    admin: "Admin",
     sales: "مندوب مبيعات",
   };
   return roleMap[role] || role;
@@ -46,21 +44,13 @@ const getBranchLabel = (branch: Branch): string => {
 };
 
 function UsersTemplates() {
-  const [filters, setFilters] = useState<UseUsersFilters>({});
-  const { users, isLoading, isError, error, pagination, page, setPage } = useUsers(1, 10, filters);
+  const { users, isLoading, isError, error } = useUsers();
   const { deleteUser } = useDeleteUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Handle filter changes
-  const handleFilterChange = (newFilters: UseUsersFilters) => {
-    setFilters(newFilters);
-    // Page will be reset automatically in useUsers hook
-  };
-
-  // Define columns
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: "image",
@@ -244,16 +234,6 @@ function UsersTemplates() {
         }}
       />
 
-     <Card className="p-6">
-     <UsersFilter
-        onFilterChange={handleFilterChange}
-        initialSearch={filters.search}
-        initialRole={filters.role}
-        initialBranch={filters.branch}
-        initialRating={filters.rating}
-      />
-     </Card>
-
       {isLoading && <UniLoading />}
 
       {!isLoading && isError && (
@@ -288,12 +268,10 @@ function UsersTemplates() {
               columns={columns}
               data={users}
               actions={actions}
-              totalItems={pagination?.total || 0}
-              itemsPerPage={pagination?.limit || 10}
-              currentPage={page}
-              onPageChange={setPage}
               tableName="مستخدم"
               isLoading={isLoading}
+              totalItems={users.length}
+              itemsPerPage={users.length || 10}
             />
             </Card>
           )}
