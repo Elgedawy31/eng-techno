@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { AboutModel } from "../models/about.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getAbout = async (
   req: Request,
@@ -99,8 +99,11 @@ export const createOrUpdateAbout = async (
     let filePath: string | undefined;
 
     if (file) {
-      const relativePath = getRelativePath(file.path);
-      filePath = `/uploads/${relativePath}`;
+      // Upload PDF to Cloudinary
+      filePath = await processFileUpload(file, "about", "company-profile", "raw");
+      if (!filePath) {
+        throw new AppError("Failed to upload file", 500);
+      }
     }
 
     // Check if about already exists (singleton pattern)
@@ -109,12 +112,8 @@ export const createOrUpdateAbout = async (
     if (existingAbout) {
       // Delete old file if new one is uploaded
       if (file && existingAbout.companyProfileFile) {
-        const oldFilePath = existingAbout.companyProfileFile.replace(
-          "/uploads/",
-          "uploads/"
-        );
         try {
-          await deleteFile(oldFilePath);
+          await deleteFile(existingAbout.companyProfileFile);
         } catch (error) {
           console.error("Error deleting old file:", error);
         }
@@ -190,16 +189,19 @@ export const updateAbout = async (
     // If new file is uploaded, delete old one
     if (file) {
       if (about.companyProfileFile) {
-        const oldFilePath = about.companyProfileFile.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldFilePath);
+          await deleteFile(about.companyProfileFile);
         } catch (error) {
           console.error("Error deleting old file:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      about.companyProfileFile = `/uploads/${relativePath}`;
+      // Upload PDF to Cloudinary
+      const filePath = await processFileUpload(file, "about", "company-profile", "raw");
+      if (!filePath) {
+        throw new AppError("Failed to upload file", 500);
+      }
+      about.companyProfileFile = filePath;
     }
 
     // Update other fields if provided
@@ -268,9 +270,8 @@ export const deleteAbout = async (
 
     // Delete associated file
     if (about.companyProfileFile) {
-      const filePath = about.companyProfileFile.replace("/uploads/", "uploads/");
       try {
-        await deleteFile(filePath);
+        await deleteFile(about.companyProfileFile);
       } catch (error) {
         console.error("Error deleting file:", error);
       }
