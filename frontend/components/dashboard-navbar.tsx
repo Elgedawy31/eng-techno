@@ -21,10 +21,10 @@ export function DashboardNavbar() {
 
   return (
     <nav className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-4">
+      <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="text-xl font-semibold">
-           <Image src="/logo.svg" alt="logo" width={120} height={60} />
+           <Image src="/logo.svg" alt="logo" width={40} height={40} />
           </Link>
         </div>
         
