@@ -8,7 +8,7 @@ export default function Manufacturing() {
     >
       <div className="flex flex-col h-full bg-black/20 justify-between px-14 py-12 ">
           <div className="border-b border-white pb-1 flex justify-between">
-          <h1 className="text-white text-5xl font-bold leading-[100%]">MANUFACTURING</h1>
+          <h1 className="text-white text-5xl font-bold leading-[100%] font-heading">MANUFACTURING</h1>
           <ChevronRight strokeWidth={.5} size={40} className="text-white"/>
           </div>
           <div className="space-y-6">

@@ -16,7 +16,7 @@ export default function ImageAndText({title, text1, text2, bgUrl}: ImageAndTextP
       <div className="flex flex-col h-full bg-black/20 justify-between px-14 py-12 ">
         <div className=" w-full space-y-6">
           <div className="border-b border-white pb-1 flex justify-between">
-          <h1 className="text-white text-5xl font-bold leading-[100%]">{title}</h1>
+          <h1 className="text-white text-5xl font-bold font-heading leading-[100%]">{title}</h1>
           <ChevronRight strokeWidth={.5} size={40} className="text-white"/>
           </div>
           <div className="text-[22px] text-white">
