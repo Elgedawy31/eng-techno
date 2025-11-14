@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import News from './News'
+import IndustryEvents from './IndustryEvents'
 
 export default function Industry() {
   return (
@@ -9,18 +10,7 @@ export default function Industry() {
     className="min-h-screen bg-cover w-full py-30 px-30"
     style={{ backgroundImage: `url(/industry.png)` }}
     >
-      <div className="h-[50vh] border-b border-[#808285]">
-        <div className="mb-5">
-          <h3 className='text-brand text-sm flex items-center'> <span className="text-xs">{"//"}</span>DEFINING TECHNO</h3>
-          <p className='text-[#090909] text-xl'>INDUSTRY EVENTS</p>
-        </div>
-        <p className='w-3/4 text-3xl font-medium'>
-          At Techno International Group, we believe that leadership in defense and security 
-        extends beyond delivering equipment and expertise — it’s about being at the heart of 
-        global conversations that shape the future of defense. That’s why we actively 
-        participate in the world’s most influential defense exhibitions and summits, where we 
-        </p>
-      </div>
+      <IndustryEvents />
       <div className=" pb-40  space-y-20">
         <News />
         <News />
