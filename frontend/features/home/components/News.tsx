@@ -4,7 +4,7 @@ import { MoveUpRight } from 'lucide-react'
 
 export default function News() {
   return (
-    <div className='flex gap-4 mt-12 h-[400px] '>
+    <div className='flex gap-4 mt-12  '>
       <div className="flex flex-col items-start justify-between w-1/2 pb-10">
         <div className="space-y-2">
           <h1 className='text-xl text-foreground font-bold'>International Airshows & Defense Summits – 2024</h1>
@@ -21,14 +21,10 @@ export default function News() {
         <p className='text-sm font-bold underline'>VIEW FULL EVENT DETAILS</p>
         </div>
       </div>
-      <div className="flex-1">
-      <div className="flex gap-6 pb-8">
-        <Image src='/news-1.png' alt='news' width={586} height={355}/>
-        <Image src='/news-2.png' alt='news' width={327} height={355}/>
-      </div>
-      <div className="flex items-center">
-      <p className='w-5/6 border-b-3 border-brand'></p>
-        <p className="flex-1 border-b border-[#808285]"></p>
+      <div className="flex-1   ">
+      <div className="flex gap-6 pb-8 w-[800px]  overflow-auto">
+        <Image src='/news-1.png' alt='news' width={586} height={395} className='min-w-[586px] max-w-[586px] min-h-[395px] max-h-[395px]'/>
+        <Image src='/news-2.png' alt='news' width={586} height={395} className='min-w-[586px] max-w-[586px] min-h-[395px] max-h-[395px]'/>
       </div>
       </div>
     </div>
