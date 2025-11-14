@@ -2,7 +2,7 @@
 import { useReactTable, getCoreRowModel, flexRender, getPaginationRowModel, getSortedRowModel,type ColumnDef,type SortingState } from '@tanstack/react-table'
 import { useState, useEffect } from 'react'
 
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Edit, Trash2, Eye, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Edit, Trash2, Eye, Plus, Power, PowerOff, ToggleLeft, ToggleRight } from 'lucide-react'
 import { Button } from '../ui/button';
 import NoDataMsg from './NoDataMsg';
 
@@ -117,6 +117,15 @@ const UniTable = <TData extends object>({
             {filteredActions?.map((action, index) => {
               const actionLabel = getResolvedLabel(action, row.original);
               let IconComponent: React.ElementType | null = null;
+              let iconColor = 'text-foreground';
+              let variant: "ghost" | "outline" | "default" | "destructive" | "secondary" | "link" = "ghost";
+
+              // Handle status toggle actions
+              const isStatusAction = 
+                actionLabel.toLowerCase().includes('activate') ||
+                actionLabel.toLowerCase().includes('deactivate') ||
+                actionLabel.toLowerCase().includes('toggle') ||
+                actionLabel.toLowerCase().includes('status');
 
               switch (actionLabel) {
                 case 'Edit':
@@ -124,26 +133,54 @@ const UniTable = <TData extends object>({
                   break;
                 case 'Delete':
                   IconComponent = Trash2;
+                  iconColor = 'text-red-500';
+                  variant = "ghost";
                   break;
                 case 'Details':
                   IconComponent = Eye;
                   break;
+                case 'Activate':
+                  IconComponent = Power;
+                  iconColor = 'text-green-600';
+                  break;
+                case 'Deactivate':
+                  IconComponent = PowerOff;
+                  iconColor = 'text-orange-600';
+                  break;
                 default:
+                  // Check if it's a status-related action
+                  if (isStatusAction) {
+                    if (actionLabel.toLowerCase().includes('activate') || actionLabel.toLowerCase().includes('active')) {
+                      IconComponent = ToggleRight;
+                      iconColor = 'text-green-600';
+                    } else if (actionLabel.toLowerCase().includes('deactivate') || actionLabel.toLowerCase().includes('inactive')) {
+                      IconComponent = ToggleLeft;
+                      iconColor = 'text-orange-600';
+                    } else {
+                      // Generic toggle
+                      IconComponent = ToggleRight;
+                      iconColor = 'text-blue-600';
+                    }
+                  }
                   break;
               }
 
               return (
                 <Button
                   key={index}
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
+                  variant={variant}
+                  className={`h-8 w-8 p-0 ${isStatusAction ? 'hover:bg-muted' : ''}`}
                   onClick={(event) => {
                     event.stopPropagation();
                     action.onClick(row.original);
                   }}
                   title={actionLabel}
                 >
-                  {IconComponent && <IconComponent className={`h-4 w-4 ${actionLabel === 'Delete' ? 'text-red-500' : 'text-'}`} />}
+                  {IconComponent && (
+                    <IconComponent 
+                      className={`h-4 w-4 ${iconColor}`} 
+                    />
+                  )}
                   <span className="sr-only">{actionLabel}</span>
                 </Button>
               );
