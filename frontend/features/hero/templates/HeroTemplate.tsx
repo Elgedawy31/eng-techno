@@ -24,6 +24,7 @@ import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { HeroDialog } from "../components/HeroDialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 function HeroTemplate() {
   const { heroes, isLoading, isError, error } = useHeroes();
@@ -69,7 +70,9 @@ function HeroTemplate() {
             onClick={handleImageClick}
           >
             {imageUrl ? (
-              <img
+              <Image
+                width={80}
+                height={80}
                 src={imageUrl}
                 alt="Hero background"
                 className="w-full h-full object-cover"
