@@ -1,6 +1,16 @@
+"use client";
+
 import Image from 'next/image'
+import { useState } from 'react'
 
 export default function SearchSection() {
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const handleSearch = () => {
+    // Handle search functionality here
+    console.log('Searching for:', searchQuery)
+  }
+
   return (
     <div 
     className="h-[60vh] bg-cover p-16 flex flex-col justify-between"
@@ -16,8 +26,24 @@ export default function SearchSection() {
         </div>
       </div>
       <div className="border-b border-[#58595B] flex items-center justify-between pb-2">
-        <p className="text-xl text-[#58595B]">What are you looking for? Vehicles, UAVs, Maritime Systems, Support…</p>
-        <span className='border-b border-white text-white text-3xl'>SEARCH</span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="What are you looking for? Vehicles, UAVs, Maritime Systems, Support…"
+          className="text-xl text-white bg-transparent border-none outline-none flex-1 placeholder:text-[#58595B]"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch()
+            }
+          }}
+        />
+        <button 
+          onClick={handleSearch}
+          className='border-b border-white text-white text-3xl cursor-pointer hover:opacity-80 transition-opacity'
+        >
+          SEARCH
+        </button>
       </div>
     </div>
   )
