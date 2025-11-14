@@ -25,6 +25,7 @@
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.5",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.8.0",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

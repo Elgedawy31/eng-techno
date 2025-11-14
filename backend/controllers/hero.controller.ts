@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { HeroModel } from "../models/hero.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getHero = async (
   req: Request,
@@ -92,9 +92,12 @@ export const createOrUpdateHero = async (
       throw new AppError("Background image is required", 400);
     }
 
-    // Get relative path for storage
-    const relativePath = getRelativePath(file.path);
-    const imagePath = `/uploads/${relativePath}`;
+    // Upload to Cloudinary
+    const imageUrl = await processFileUpload(file, "hero", "background");
+
+    if (!imageUrl) {
+      throw new AppError("Failed to upload image", 500);
+    }
 
     // Check if hero already exists (singleton pattern)
     const existingHero = await HeroModel.findOne();
@@ -102,12 +105,8 @@ export const createOrUpdateHero = async (
     if (existingHero) {
       // Delete old image if it exists
       if (existingHero.backgroundImage) {
-        const oldImagePath = existingHero.backgroundImage.replace(
-          "/uploads/",
-          "uploads/"
-        );
         try {
-          await deleteFile(oldImagePath);
+          await deleteFile(existingHero.backgroundImage);
         } catch (error) {
           // Log error but don't fail the update
           console.error("Error deleting old image:", error);
@@ -115,7 +114,7 @@ export const createOrUpdateHero = async (
       }
 
       // Update existing hero
-      existingHero.backgroundImage = imagePath;
+      existingHero.backgroundImage = imageUrl;
       existingHero.headline = headline;
       existingHero.subtitle = subtitle;
       existingHero.buttonText = buttonText;
@@ -134,7 +133,7 @@ export const createOrUpdateHero = async (
     } else {
       // Create new hero
       const hero = await HeroModel.create({
-        backgroundImage: imagePath,
+        backgroundImage: imageUrl,
         headline,
         subtitle,
         buttonText,
@@ -172,16 +171,17 @@ export const updateHero = async (
     // If new image is uploaded, delete old one
     if (file) {
       if (hero.backgroundImage) {
-        const oldImagePath = hero.backgroundImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldImagePath);
+          await deleteFile(hero.backgroundImage);
         } catch (error) {
           console.error("Error deleting old image:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      hero.backgroundImage = `/uploads/${relativePath}`;
+      const imageUrl = await processFileUpload(file, "hero", "background");
+      if (imageUrl) {
+        hero.backgroundImage = imageUrl;
+      }
     }
 
     // Update other fields if provided

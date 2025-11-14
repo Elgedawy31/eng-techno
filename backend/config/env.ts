@@ -12,6 +12,11 @@ export const env = {
   defaultAdminName: process.env.DEFAULT_ADMIN_NAME || "Super Admin",
   useHttps: process.env.USE_HTTPS === "true",
   cookieHttpOnly: process.env.COOKIE_HTTP_ONLY === "true",
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+    apiKey: process.env.CLOUDINARY_API_KEY || "",
+    apiSecret: process.env.CLOUDINARY_API_SECRET || "",
+  },
 };
 
 

@@ -1,19 +1,5 @@
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const ensureUploadsDir = (subfolder: string) => {
-  const uploadPath = path.join(__dirname, "../uploads", subfolder);
-  if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-  }
-  return uploadPath;
-};
+import { uploadToCloudinary, deleteFromCloudinary } from "./cloudinary";
 
 // File filter for images
 const imageFilter = (
@@ -25,7 +11,7 @@ const imageFilter = (
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("نوع الملف غير مدعوم. يرجى استخدام JPEG أو PNG أو WebP"));
+    cb(new Error("File type not supported. Please use JPEG, PNG, or WebP"));
   }
 };
 
@@ -42,190 +28,6 @@ const pdfFilter = (
     cb(new Error("File type not supported. Please use PDF"));
   }
 };
-
-const userStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const userPath = ensureUploadsDir("users");
-    cb(null, userPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `user-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadUser = multer({
-  storage: userStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size
-  },
-});
-
-const heroStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const heroPath = ensureUploadsDir("hero");
-    cb(null, heroPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `hero-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadHero = multer({
-  storage: heroStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
-  },
-});
-
-const aboutStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const aboutPath = ensureUploadsDir("about");
-    cb(null, aboutPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `company-profile-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadAbout = multer({
-  storage: aboutStorage,
-  fileFilter: pdfFilter,
-  limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB max file size for PDF files
-  },
-});
-
-const serviceStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const servicePath = ensureUploadsDir("services");
-    cb(null, servicePath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `service-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadService = multer({
-  storage: serviceStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for service images
-  },
-});
-
-const searchStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const searchPath = ensureUploadsDir("search");
-    cb(null, searchPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `search-logo-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadSearch = multer({
-  storage: searchStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size for search logo
-  },
-});
-
-const eventStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const eventPath = ensureUploadsDir("events");
-    cb(null, eventPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    const fieldName = file.fieldname === "eventLogoImage" ? "logo" : "display";
-    cb(null, `event-${fieldName}-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadEvent = multer({
-  storage: eventStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for event images
-    files: 11, // 1 logo + up to 10 display images
-  },
-});
-
-const announcementStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const announcementPath = ensureUploadsDir("announcements");
-    cb(null, announcementPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    const fieldName = file.fieldname === "eventLogoImage" ? "logo" : "background";
-    cb(null, `announcement-${fieldName}-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadAnnouncement = multer({
-  storage: announcementStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for announcement images
-    files: 2, // 1 logo + 1 background image
-  },
-});
-
-const aboutPageHeroStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const aboutPageHeroPath = ensureUploadsDir("about-page-hero");
-    cb(null, aboutPageHeroPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `about-page-hero-${uniqueSuffix}${ext}`);
-  },
-});
-
-export const uploadAboutPageHero = multer({
-  storage: aboutPageHeroStorage,
-  fileFilter: imageFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
-  },
-});
-
-const aboutPageContentStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const aboutPageContentPath = ensureUploadsDir("about-page-content");
-    cb(null, aboutPageContentPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    if (file.fieldname === "logoImage") {
-      cb(null, `about-page-logo-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "backgroundImage") {
-      cb(null, `about-page-bg-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "companyProfileFile") {
-      cb(null, `company-profile-${uniqueSuffix}${ext}`);
-    } else {
-      cb(null, `about-page-${uniqueSuffix}${ext}`);
-    }
-  },
-});
 
 // Combined filter for images and PDFs
 const imageAndPdfFilter = (
@@ -247,8 +49,86 @@ const imageAndPdfFilter = (
   }
 };
 
+// Multer memory storage - files will be stored in memory as buffers
+const memoryStorage = multer.memoryStorage();
+
+// User uploads
+export const uploadUser = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+  },
+});
+
+// Hero uploads
+export const uploadHero = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
+  },
+});
+
+// About uploads (PDF)
+export const uploadAbout = multer({
+  storage: memoryStorage,
+  fileFilter: pdfFilter,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB max file size for PDF files
+  },
+});
+
+// Service uploads
+export const uploadService = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for service images
+  },
+});
+
+// Search uploads
+export const uploadSearch = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size for search logo
+  },
+});
+
+// Event uploads
+export const uploadEvent = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for event images
+    files: 11, // 1 logo + up to 10 display images
+  },
+});
+
+// Announcement uploads
+export const uploadAnnouncement = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for announcement images
+    files: 2, // 1 logo + 1 background image
+  },
+});
+
+// About Page Hero uploads
+export const uploadAboutPageHero = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
+  },
+});
+
+// About Page Content uploads
 export const uploadAboutPageContent = multer({
-  storage: aboutPageContentStorage,
+  storage: memoryStorage,
   fileFilter: imageAndPdfFilter,
   limits: {
     fileSize: 20 * 1024 * 1024, // 20MB max file size
@@ -256,50 +136,18 @@ export const uploadAboutPageContent = multer({
   },
 });
 
-const clientPartnerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const clientPartnerPath = ensureUploadsDir("client-partners");
-    cb(null, clientPartnerPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `client-partner-emblem-${uniqueSuffix}${ext}`);
-  },
-});
-
+// Client Partner uploads
 export const uploadClientPartner = multer({
-  storage: clientPartnerStorage,
+  storage: memoryStorage,
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB max file size for emblem images
   },
 });
 
-const missionVisionStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const missionVisionPath = ensureUploadsDir("mission-vision");
-    cb(null, missionVisionPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    if (file.fieldname === "missionLogoImage") {
-      cb(null, `mission-logo-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "missionImage") {
-      cb(null, `mission-image-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "visionLogoImage") {
-      cb(null, `vision-logo-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "visionImage") {
-      cb(null, `vision-image-${uniqueSuffix}${ext}`);
-    } else {
-      cb(null, `mission-vision-${uniqueSuffix}${ext}`);
-    }
-  },
-});
-
+// Mission Vision uploads
 export const uploadMissionVision = multer({
-  storage: missionVisionStorage,
+  storage: memoryStorage,
   fileFilter: imageFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB max file size for images
@@ -307,28 +155,9 @@ export const uploadMissionVision = multer({
   },
 });
 
-const complianceQualityStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const complianceQualityPath = ensureUploadsDir("compliance-quality");
-    cb(null, complianceQualityPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    if (file.fieldname === "logoImage") {
-      cb(null, `compliance-logo-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "displayImage") {
-      cb(null, `compliance-display-${uniqueSuffix}${ext}`);
-    } else if (file.fieldname === "companyProfileFile") {
-      cb(null, `company-profile-${uniqueSuffix}${ext}`);
-    } else {
-      cb(null, `compliance-quality-${uniqueSuffix}${ext}`);
-    }
-  },
-});
-
+// Compliance Quality uploads
 export const uploadComplianceQuality = multer({
-  storage: complianceQualityStorage,
+  storage: memoryStorage,
   fileFilter: imageAndPdfFilter,
   limits: {
     fileSize: 20 * 1024 * 1024, // 20MB max file size
@@ -336,22 +165,75 @@ export const uploadComplianceQuality = multer({
   },
 });
 
-export const deleteFile = (filePath: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
-    const fullPath = path.join(__dirname, "..", cleanPath);
-    fs.unlink(fullPath, (err) => {
-      if (err && err.code !== "ENOENT") {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+// Delete file from Cloudinary
+export const deleteFile = async (filePathOrUrl: string): Promise<void> => {
+  await deleteFromCloudinary(filePathOrUrl);
 };
 
-export const getRelativePath = (absolutePath: string): string => {
-  const uploadsPath = path.join(__dirname, "../uploads");
-  return path.relative(uploadsPath, absolutePath).replace(/\\/g, "/");
+// Get relative path - now returns Cloudinary URL as-is
+// This function is kept for backward compatibility but just returns the URL
+export const getRelativePath = (url: string): string => {
+  // If it's already a Cloudinary URL, return it
+  if (url.includes("cloudinary.com")) {
+    return url;
+  }
+  // For backward compatibility with old local paths
+  return url;
 };
 
+// Helper function to upload file buffer to Cloudinary
+export const uploadFileToCloudinary = async (
+  buffer: Buffer,
+  folder: string,
+  filename?: string
+): Promise<string> => {
+  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  const publicId = filename ? `${folder}-${filename}-${uniqueSuffix}` : `${folder}-${uniqueSuffix}`;
+  const result = await uploadToCloudinary(buffer, folder, publicId);
+  return result.secure_url;
+};
+
+// Helper function to process multer file and upload to Cloudinary
+export const processFileUpload = async (
+  file: Express.Multer.File | undefined,
+  folder: string,
+  fieldName?: string
+): Promise<string | undefined> => {
+  if (!file || !file.buffer) {
+    return undefined;
+  }
+
+  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  const publicId = fieldName 
+    ? `${folder}-${fieldName}-${uniqueSuffix}` 
+    : `${folder}-${uniqueSuffix}`;
+  
+  const result = await uploadToCloudinary(file.buffer, folder, publicId);
+  return result.secure_url;
+};
+
+// Helper function to process multiple files
+export const processMultipleFiles = async (
+  files: Express.Multer.File[] | undefined,
+  folder: string,
+  fieldNameMap?: Record<string, string>
+): Promise<Record<string, string>> => {
+  const result: Record<string, string> = {};
+  
+  if (!files || files.length === 0) {
+    return result;
+  }
+
+  for (const file of files) {
+    if (!file.buffer) continue;
+    
+    const fieldName = fieldNameMap?.[file.fieldname] || file.fieldname;
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const publicId = `${folder}-${fieldName}-${uniqueSuffix}`;
+    
+    const uploadResult = await uploadToCloudinary(file.buffer, folder, publicId);
+    result[file.fieldname] = uploadResult.secure_url;
+  }
+
+  return result;
+};
