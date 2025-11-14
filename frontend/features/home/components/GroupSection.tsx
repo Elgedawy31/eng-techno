@@ -16,7 +16,6 @@ export default function GroupSection({ services }: GroupSectionProps) {
   const logisticsService = services.find(s => s.order === 3);
 
   return (
-    <Fade duration={800} triggerOnce>
       <div className='flex h-screen'>
         <div className="flex-1">
           {solutionsService ? (
@@ -36,6 +35,5 @@ export default function GroupSection({ services }: GroupSectionProps) {
           )}
         </div>
       </div>
-    </Fade>
   )
 }

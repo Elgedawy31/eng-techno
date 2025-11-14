@@ -27,15 +27,17 @@ export default function SearchSection() {
   const subtitleLines = formattedSubtitle.split("\n").filter((line) => line.trim().length > 0)
 
   return (
-    <Fade duration={800} triggerOnce>
       <div 
       className="h-[60vh] bg-cover p-16 flex flex-col justify-between"
       style={{ backgroundImage: `url(/search-bg.png)` }}
       >
         <div className="flex justify-between">
           <div className="w-1/3 text-white">
-            <h1 className='text-6xl mb-2'>{title}</h1>
-            <p className='text-2xl'>
+            <Fade direction="up" duration={800} delay={200} triggerOnce>
+              <h1 className='text-6xl mb-2'>{title}</h1>
+            </Fade>
+            <Fade direction="up" duration={800} delay={400} triggerOnce>
+              <p className='text-2xl'>
               {subtitleLines.map((line, index) => (
                 <span key={index}>
                   {line}
@@ -43,13 +45,17 @@ export default function SearchSection() {
                 </span>
               ))}
             </p>
+            </Fade>
           </div>
           <div className="">
-            <Image src={logoImage} alt='logo' width={140} height={141} />
+            <Fade direction="up" duration={800} delay={600} triggerOnce>
+              <Image src={logoImage} alt='logo' width={140} height={141} />
+            </Fade>
           </div>
         </div>
         <div className="border-b border-[#58595B] flex items-center justify-between pb-2">
-          <input
+          <Fade direction="up" duration={800} delay={800} triggerOnce>
+            <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -61,16 +67,18 @@ export default function SearchSection() {
               }
             }}
             disabled={isLoading}
-          />
-          <button 
+            />
+            </Fade>
+          <Fade direction="up" duration={800} delay={1000} triggerOnce>
+            <button 
             onClick={handleSearch}
             className='border-b border-white text-white text-3xl cursor-pointer hover:opacity-80 transition-opacity'
             disabled={isLoading}
           >
-            {buttonText}
-          </button>
+              {buttonText}
+            </button>
+          </Fade>
         </div>
       </div>
-    </Fade>
   )
 }
