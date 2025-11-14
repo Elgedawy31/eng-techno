@@ -276,6 +276,37 @@ export const uploadClientPartner = multer({
   },
 });
 
+const missionVisionStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const missionVisionPath = ensureUploadsDir("mission-vision");
+    cb(null, missionVisionPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    if (file.fieldname === "missionLogoImage") {
+      cb(null, `mission-logo-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "missionImage") {
+      cb(null, `mission-image-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "visionLogoImage") {
+      cb(null, `vision-logo-${uniqueSuffix}${ext}`);
+    } else if (file.fieldname === "visionImage") {
+      cb(null, `vision-image-${uniqueSuffix}${ext}`);
+    } else {
+      cb(null, `mission-vision-${uniqueSuffix}${ext}`);
+    }
+  },
+});
+
+export const uploadMissionVision = multer({
+  storage: missionVisionStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for images
+    files: 4, // missionLogo + missionImage + visionLogo + visionImage
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
