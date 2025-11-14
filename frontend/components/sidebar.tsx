@@ -2,25 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {  HomeIcon, UsersIcon } from "lucide-react";
+import {   UsersIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
 const sidebarItems = [
   {
-    title:"Home",
+    title:"Users",
     href: "/dashboard",
-    icon: HomeIcon,
-    roles: ["admin"], 
-  },
- 
-  {
-    title: "Users",
-    href: "/dashboard/users",
     icon: UsersIcon,
     roles: ["admin"], 
   },
- 
+
 ];
 
 export function Sidebar() {
