@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersIcon, ImageIcon } from "lucide-react";
+import { UsersIcon, ImageIcon, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
@@ -17,6 +17,12 @@ const sidebarItems = [
     title:"Hero Sections",
     href: "/admin/hero",
     icon: ImageIcon,
+    roles: ["admin"], 
+  },
+  {
+    title:"About Sections",
+    href: "/admin/about",
+    icon: FileText,
     roles: ["admin"], 
   },
 ];
