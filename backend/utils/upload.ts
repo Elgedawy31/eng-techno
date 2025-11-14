@@ -49,6 +49,25 @@ export const uploadUser = multer({
   },
 });
 
+const heroStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const heroPath = ensureUploadsDir("hero");
+    cb(null, heroPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `hero-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadHero = multer({
+  storage: heroStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
+  },
+});
 
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
