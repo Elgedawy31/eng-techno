@@ -31,7 +31,8 @@ export default function CoreValues() {
         ))}
       </div>
       </div>
-        <div className="flex h-[750px]">
+      <Fade direction="up" duration={800} triggerOnce>
+      <div className="flex h-[750px]">
           <div className="bg-black text-center w-1/5">
             <h1 className='my-14 text-3xl text-primary'>GLOBAL PRESENCE</h1>
             <div className="w-full h-[603px] relative">
@@ -46,6 +47,7 @@ export default function CoreValues() {
             <Image src='/presence2.png' alt='pres2' fill/>
           </div>
         </div>
+      </Fade>
     </div>
   )
 }
