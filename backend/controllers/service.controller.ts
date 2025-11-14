@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ServiceModel } from "../models/service.model";
 import { sendResponse } from "../utils/sendResponse";
 import AppError from "../errors/AppError";
-import { deleteFile, getRelativePath } from "../utils/upload";
+import { deleteFile, processFileUpload } from "../utils/upload";
 
 export const getServices = async (
   req: Request,
@@ -94,9 +94,11 @@ export const createService = async (
       throw new AppError("Background image is required", 400);
     }
 
-    // Get relative path for storage
-    const relativePath = getRelativePath(file.path);
-    const imagePath = `/uploads/${relativePath}`;
+    // Upload image to Cloudinary
+    const imageUrl = await processFileUpload(file, "service", "background");
+    if (!imageUrl) {
+      throw new AppError("Failed to upload image", 500);
+    }
 
     // Parse categoryTags if it's a string
     let tags: string[] = [];
@@ -116,7 +118,7 @@ export const createService = async (
     const service = await ServiceModel.create({
       title,
       description,
-      backgroundImage: imagePath,
+      backgroundImage: imageUrl,
       categoryTags: tags,
       buttonText,
       buttonAction,
@@ -163,16 +165,19 @@ export const updateService = async (
     // If new image is uploaded, delete old one
     if (file) {
       if (service.backgroundImage) {
-        const oldImagePath = service.backgroundImage.replace("/uploads/", "uploads/");
         try {
-          await deleteFile(oldImagePath);
+          await deleteFile(service.backgroundImage);
         } catch (error) {
           console.error("Error deleting old image:", error);
         }
       }
 
-      const relativePath = getRelativePath(file.path);
-      service.backgroundImage = `/uploads/${relativePath}`;
+      // Upload image to Cloudinary
+      const imageUrl = await processFileUpload(file, "service", "background");
+      if (!imageUrl) {
+        throw new AppError("Failed to upload image", 500);
+      }
+      service.backgroundImage = imageUrl;
     }
 
     // Update other fields if provided
@@ -254,9 +259,8 @@ export const deleteService = async (
 
     // Delete associated image
     if (service.backgroundImage) {
-      const imagePath = service.backgroundImage.replace("/uploads/", "uploads/");
       try {
-        await deleteFile(imagePath);
+        await deleteFile(service.backgroundImage);
       } catch (error) {
         console.error("Error deleting image:", error);
       }
