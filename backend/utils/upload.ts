@@ -187,6 +187,26 @@ export const uploadAnnouncement = multer({
   },
 });
 
+const aboutPageHeroStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const aboutPageHeroPath = ensureUploadsDir("about-page-hero");
+    cb(null, aboutPageHeroPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `about-page-hero-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadAboutPageHero = multer({
+  storage: aboutPageHeroStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for hero images
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
