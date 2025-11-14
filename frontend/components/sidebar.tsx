@@ -36,7 +36,6 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r border-border bg-sidebar">
       <div className="flex-1 space-y-2 p-4">
         {filteredItems.map((item) => {
-          // For home route, only match exactly. For other routes, match the route and its children
           const isActive = item.href === "/dashboard"
             ? pathname === "/dashboard" || pathname === "/dashboard/"
             : pathname === item.href || pathname.startsWith(item.href + "/");
