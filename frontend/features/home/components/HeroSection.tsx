@@ -45,16 +45,27 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
     );
   }
 
-  // Render hero content from API
+  const headlineLines = hero.headline.split("\n").filter((line) => line.trim().length > 0);
+  const subtitleLines = hero.subtitle.split("\n").filter((line) => line.trim().length > 0);
+
   return (
     <div className='flex flex-col items-start justify-center h-[86.7vh] text-white gap-4 px-70'>
       <div>
-        <h1 className='text-6xl font-normal font-heading leading-[100%]'>
-          {hero.headline}
-        </h1>
+        {headlineLines.map((line, index) => (
+          <h1 
+            key={index}
+            className={`text-6xl font-normal font-heading ${index === 0 ? 'leading-[100%]' : ''}`}
+          >
+            {line}
+          </h1>
+        ))}
       </div>
       <div>
-        <p className='text-2xl'>{hero.subtitle}</p>
+        {subtitleLines.map((line, index) => (
+          <p key={index} className='text-2xl'>
+            {line}
+          </p>
+        ))}
       </div>
       {hero.buttonText && hero.buttonAction && (
         <Link 
