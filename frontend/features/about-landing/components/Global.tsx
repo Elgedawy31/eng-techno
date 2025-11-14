@@ -1,4 +1,7 @@
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { Fade } from 'react-awesome-reveal';
 
 export default function Global() {
   return (
@@ -19,11 +22,25 @@ export default function Global() {
         </div>
         <div className="flex gap-20">
           <Image src='/global-image.png' alt='global' width={720} height={786}/>
+          <div>
           <p className='text-3xl w-1/2'>
             With decades of experience and a robust presence across 30+ countries, 
             our operations are supported by a global network of over 4,000 defense and security 
             experts. From military equipment and advanced technologies to strategic consulting and training, we
             </p>
+            <Fade direction="up" duration={800} delay={600} triggerOnce>
+          <Link 
+            href='/'
+            className='bg-black w-fit text-white py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 hover:gap-3 transition-all duration-300 group'
+          >
+            DOWNLOAD COMPANY PROFILE
+            <ChevronRight 
+              size={20} 
+              className='text-white group-hover:translate-x-1 transition-transform duration-300'
+            />
+          </Link>
+        </Fade>
+          </div>
         </div>
       </div>
     </div>
