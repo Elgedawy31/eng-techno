@@ -1,0 +1,15 @@
+import React from 'react'
+import { Spinner } from '@/components/ui/spinner'
+
+function loading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <Spinner className="size-8 text-primary" />
+        <p className="text-sm text-muted-foreground">جاري التحميل...</p>
+      </div>
+    </div>
+  )
+}
+
+export default loading
