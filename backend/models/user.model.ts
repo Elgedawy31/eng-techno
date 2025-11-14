@@ -1,6 +1,6 @@
 import { Schema, model, type InferSchemaType } from "mongoose";
 
-export const USER_ROLES = ["user", "admin"] as const;
+export const USER_ROLES = ["admin"] as const;
 export type UserRole = typeof USER_ROLES[number];
 
 const UserSchema = new Schema(
@@ -28,7 +28,7 @@ const UserSchema = new Schema(
       type: String,
       enum: USER_ROLES,
       required: true,
-      default: "user",
+      default: "admin",
     },
   },
   {
