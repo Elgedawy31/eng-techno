@@ -270,10 +270,16 @@ function AboutPageContentTemplate() {
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
         index={lightboxIndex}
-        slides={contentsWithImages.flatMap((content) => [
-          content.backgroundImage && { src: content.backgroundImage, alt: content.headline || "Background" },
-          content.logoImage && { src: content.logoImage, alt: content.headline || "Logo" },
-        ].filter(Boolean))}
+        slides={contentsWithImages.flatMap((content) => {
+          const slides: Array<{ src: string; alt: string }> = [];
+          if (content.backgroundImage) {
+            slides.push({ src: content.backgroundImage, alt: content.headline || "Background" });
+          }
+          if (content.logoImage) {
+            slides.push({ src: content.logoImage, alt: content.headline || "Logo" });
+          }
+          return slides;
+        })}
       />
     </section>
   );
