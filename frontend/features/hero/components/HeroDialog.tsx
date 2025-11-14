@@ -40,6 +40,7 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
   const { updateHero, isPending: isUpdating } = useUpdateHero();
   const isPending = isCreating || isUpdating;
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
 
   const {
     register,
@@ -70,7 +71,9 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
 
   // Reset form when hero changes (switching between create/edit)
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+
+    const resetForm = () => {
       if (isEditMode && hero) {
         reset({
           headline: hero.headline || "",
@@ -79,7 +82,6 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
           buttonAction: hero.buttonAction || "",
           isActive: hero.isActive ?? true,
         });
-        setImageFile(null);
       } else {
         reset({
           headline: "",
@@ -88,9 +90,12 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
           buttonAction: "",
           isActive: true,
         });
-        setImageFile(null);
       }
-    }
+      setImageFile(null);
+      setImageRemoved(false);
+    };
+
+    resetForm();
   }, [open, hero, isEditMode, reset]);
 
   const onSubmit = async (data: CreateOrUpdateHeroFormData | UpdateHeroFormData) => {
@@ -111,7 +116,13 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
         if (data.buttonText) updatePayload.buttonText = data.buttonText;
         if (data.buttonAction) updatePayload.buttonAction = data.buttonAction;
         if (data.isActive !== undefined) updatePayload.isActive = data.isActive;
-        if (imageFile) updatePayload.backgroundImage = imageFile;
+        if (imageFile) {
+          updatePayload.backgroundImage = imageFile;
+        } else if (imageRemoved) {
+          // If image was explicitly removed, we need to handle it
+          // Note: The backend might need to handle empty image differently
+          // For now, we'll only send the image if a new one is uploaded
+        }
 
         await updateHero({
           id: hero._id,
@@ -160,6 +171,7 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
           }
     );
     setImageFile(null);
+    setImageRemoved(false);
     onOpenChange(false);
   };
 
@@ -191,18 +203,39 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
             <Controller
               name="backgroundImage"
               control={control}
-              render={({ field: { onChange, onBlur } }) => (
-                <ImageUpload
-                  value={imageFile || hero?.backgroundImage || null}
-                  onChange={(file) => {
-                    setImageFile(file);
-                    onChange(file || undefined);
-                  }}
-                  onBlur={onBlur}
-                  error={errors.backgroundImage}
-                  disabled={isPending}
-                />
-              )}
+              render={({ field: { onChange, onBlur } }: { field: { onChange: (value: File | undefined) => void; onBlur: () => void } }) => {
+                // Determine the value to display
+                let displayValue: File | string | null = null;
+                if (imageRemoved) {
+                  displayValue = null;
+                } else if (imageFile) {
+                  displayValue = imageFile;
+                } else if (isEditMode && hero?.backgroundImage) {
+                  displayValue = hero.backgroundImage;
+                }
+
+                return (
+                  <ImageUpload
+                    value={displayValue}
+                    onChange={(file) => {
+                      if (file === null) {
+                        // Image was removed
+                        setImageFile(null);
+                        setImageRemoved(true);
+                        onChange(undefined);
+                      } else {
+                        // New image was selected
+                        setImageFile(file);
+                        setImageRemoved(false);
+                        onChange(file);
+                      }
+                    }}
+                    onBlur={onBlur}
+                    error={errors.backgroundImage}
+                    disabled={isPending}
+                  />
+                );
+              }}
             />
           </div>
 
@@ -263,7 +296,7 @@ export function HeroDialog({ open, onOpenChange, hero }: HeroDialogProps) {
             <Controller
               name="isActive"
               control={control}
-              render={({ field }) => (
+              render={({ field }: { field: { value: boolean | undefined; onChange: (value: boolean) => void } }) => (
                 <>
                   <Checkbox
                     id="isActive"
