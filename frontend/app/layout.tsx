@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import { Oswald, Manrope } from "next/font/google";
 import "./globals.css";
 import { CoreProviders } from "./providers";
 
-const cairo = Cairo({
-  variable: "--font-cairo",
-  subsets: ["latin", "arabic"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+const oswald = Oswald({
+  variable: "--font-oswald",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -76,7 +82,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={`${cairo.variable} font-sans antialiased`}
+        className={`${oswald.variable} ${manrope.variable} font-sans antialiased`}
       >
         <CoreProviders>{children}</CoreProviders>
       </body>
