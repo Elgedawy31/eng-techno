@@ -3,7 +3,6 @@
 import ImageAndText from './Image&Text'
 import Manufacturing from './Manufacturing'
 import type { Service } from "@/features/service/services/serviceService";
-import { Fade } from "react-awesome-reveal";
 
 interface GroupSectionProps {
   services: Service[];

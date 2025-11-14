@@ -34,7 +34,7 @@ export default function SearchSection() {
         <div className="flex justify-between">
           <div className="w-1/3 text-white">
             <Fade direction="up" duration={800} delay={200} triggerOnce>
-              <h1 className='text-6xl mb-2'>{title}</h1>
+              <h1 className='text-6xl mb-2 font-heading'>{title}</h1>
             </Fade>
             <Fade direction="up" duration={800} delay={400} triggerOnce>
               <p className='text-2xl'>

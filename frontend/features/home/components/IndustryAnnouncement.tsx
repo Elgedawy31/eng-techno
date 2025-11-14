@@ -47,7 +47,7 @@ export default function IndustryAnnouncement() {
       </Fade>
       
       <Fade direction="up" duration={800} delay={400} triggerOnce>
-        <p className='text-brand text-3xl font-bold underline leading-tight'>
+        <p className='text-brand text-3xl w-66 font-bold underline leading-tight'>
           {boothInfoLines.map((line, index) => (
             <span key={index}>
               {line}

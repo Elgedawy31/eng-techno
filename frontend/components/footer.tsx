@@ -34,7 +34,7 @@ export default function Footer() {
           <Fade direction="up" duration={800} triggerOnce>
             <div className="space-y-4 w-[450px]">
               <h1 className='font-bold text-[28px] text-[#808285]'>{mainTitle}</h1>
-              <h1 className='text-4xl text-white leading-tight'>
+              <h1 className='text-4xl text-white leading-tight font-heading'>
                 {subtitleLines.map((line, index) => (
                   <span key={index}>
                     {line}
