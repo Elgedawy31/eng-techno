@@ -6,6 +6,7 @@ import { router as serviceRouter } from "./service.route";
 import { router as searchRouter } from "./search.route";
 import { router as mediaCentreRouter } from "./mediaCentre.route";
 import { router as eventRouter } from "./event.route";
+import { router as announcementRouter } from "./announcement.route";
 
 export const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/services", serviceRouter);
 router.use("/search", searchRouter);
 router.use("/media-centre", mediaCentreRouter);
 router.use("/events", eventRouter);
+router.use("/announcements", announcementRouter);
 
 

@@ -165,6 +165,28 @@ export const uploadEvent = multer({
   },
 });
 
+const announcementStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const announcementPath = ensureUploadsDir("announcements");
+    cb(null, announcementPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    const fieldName = file.fieldname === "eventLogoImage" ? "logo" : "background";
+    cb(null, `announcement-${fieldName}-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadAnnouncement = multer({
+  storage: announcementStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for announcement images
+    files: 2, // 1 logo + 1 background image
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
