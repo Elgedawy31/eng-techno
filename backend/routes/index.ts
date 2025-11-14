@@ -10,6 +10,8 @@ import { router as announcementRouter } from "./announcement.route";
 import { router as footerRouter } from "./footer.route";
 import { router as aboutPageHeroRouter } from "./aboutPageHero.route";
 import { router as aboutPageContentRouter } from "./aboutPageContent.route";
+import { router as clientsPartnersSectionRouter } from "./clientsPartnersSection.route";
+import { router as clientPartnerRouter } from "./clientPartner.route";
 
 export const router = Router();
 
@@ -24,5 +26,7 @@ router.use("/announcements", announcementRouter);
 router.use("/footer", footerRouter);
 router.use("/about-page-hero", aboutPageHeroRouter);
 router.use("/about-page-content", aboutPageContentRouter);
+router.use("/clients-partners-section", clientsPartnersSectionRouter);
+router.use("/client-partners", clientPartnerRouter);
 
 

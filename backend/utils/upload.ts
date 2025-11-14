@@ -256,6 +256,26 @@ export const uploadAboutPageContent = multer({
   },
 });
 
+const clientPartnerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const clientPartnerPath = ensureUploadsDir("client-partners");
+    cb(null, clientPartnerPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `client-partner-emblem-${uniqueSuffix}${ext}`);
+  },
+});
+
+export const uploadClientPartner = multer({
+  storage: clientPartnerStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size for emblem images
+  },
+});
+
 export const deleteFile = (filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     const cleanPath = filePath.startsWith("/") ? filePath.slice(1) : filePath;
