@@ -43,20 +43,28 @@ export default function About({ about }: AboutProps) {
           <div className="flex items-center mt-6 gap-3">
             {button1Text && (
               <Fade direction="up" duration={800} delay={600} triggerOnce> 
-              <Link href={button1Action} className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 mt-6'>
-                {button1Text}
-                <ChevronRight strokeWidth={.5} size={20}/>
-              </Link>
+                <Link 
+                  href={button1Action} 
+                  className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 hover:bg-white/10 hover:gap-3 transition-all duration-300 group'
+                >
+                  {button1Text}
+                  <ChevronRight 
+                    strokeWidth={.5} 
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform duration-300"
+                  />
+                </Link>
               </Fade>
             )}
             {button2Text && (
-              <Fade direction="up" duration={800} delay={800} triggerOnce>  <Link 
-                href={companyProfileFile || "#"} 
-                className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 mt-6'
-                {...(companyProfileFile ? { download: true, target: "_blank" } : {})}
-              >
-                {button2Text}
-              </Link>
+              <Fade direction="up" duration={800} delay={800} triggerOnce>
+                <Link 
+                  href={companyProfileFile || "#"} 
+                  className='border border-white text-white py-2 px-3 text-sm flex items-center gap-2 hover:bg-white/10 hover:gap-3 transition-all duration-300 group'
+                  {...(companyProfileFile ? { download: true, target: "_blank" } : {})}
+                >
+                  {button2Text}
+                </Link>
               </Fade>
             )}
           </div>

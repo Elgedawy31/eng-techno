@@ -41,15 +41,18 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
           </div>
         </Fade>
         <Fade direction="up" duration={800} delay={400} triggerOnce>
-          <div>
-            <p className='text-2xl'>Empowering nations with cutting-edge equipment,</p>
-            <p className='text-2xl'>advanced technology, and trusted expertise.</p>
+          <div className="space-y-1">
+            <p className='text-2xl leading-relaxed'>Empowering nations with cutting-edge equipment,</p>
+            <p className='text-2xl leading-relaxed'>advanced technology, and trusted expertise.</p>
           </div>
         </Fade>
         <Fade direction="up" duration={800} delay={600} triggerOnce>
-          <button className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'>
+          <button className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 hover:gap-3 transition-all duration-300 group'>
             EXPLORE  
-            <ChevronRight size={20} className='text-white'/>
+            <ChevronRight 
+              size={20} 
+              className='text-white group-hover:translate-x-1 transition-transform duration-300'
+            />
           </button>
         </Fade>
       </div>
@@ -75,9 +78,9 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
         </div>
       </Fade>
       <Fade direction="up" duration={800} delay={400} triggerOnce>
-        <div>
+        <div className="space-y-1">
           {subtitleLines.map((line, index) => (
-            <p key={index} className='text-2xl'>
+            <p key={index} className='text-2xl leading-relaxed'>
               {line}
             </p>
           ))}
@@ -87,10 +90,13 @@ export default function HeroSection({ hero, isLoading }: HeroSectionProps) {
         <Fade direction="up" duration={800} delay={600} triggerOnce>
           <Link 
             href={hero.buttonAction}
-            className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 transition-colors'
+            className='bg-black py-2 px-3 text-sm flex items-center gap-2 mt-6 cursor-pointer hover:bg-black/80 hover:gap-3 transition-all duration-300 group'
           >
             {hero.buttonText}
-            <ChevronRight size={20} className='text-white'/>
+            <ChevronRight 
+              size={20} 
+              className='text-white group-hover:translate-x-1 transition-transform duration-300'
+            />
           </Link>
         </Fade>
       )}
